@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusReservationSystem.webSolution", "BusReservationSystem\BusReservationSystem.webSolution.csproj", "{6159A3E1-D5F0-4DBE-9543-81914A4F3795}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserData.Core", "UserData.Core\UserData.Core.csproj", "{BEF6F28C-F62A-4E54-AEBD-BC5FD3F34C86}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserData.Repository", "UserData.Repository\UserData.Repository.csproj", "{9A3A0053-E757-42EC-96B9-41545DC0E2C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserData.Services", "UserData.Services\UserData.Services.csproj", "{F804C053-8817-4827-BFB4-F866E99CB4D2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilitys", "Utilitys\Utilitys.csproj", "{10814E00-6022-4FF4-AC88-DC5971ACFFC5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entity", "Entity\Entity.csproj", "{E65232D0-FFCC-4B17-A7B4-B5A4B18495BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reservationapi", "Reservationapi\Reservationapi.csproj", "{31A36EC2-793A-4F04-9118-A463FB6AD75A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6159A3E1-D5F0-4DBE-9543-81914A4F3795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6159A3E1-D5F0-4DBE-9543-81914A4F3795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6159A3E1-D5F0-4DBE-9543-81914A4F3795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6159A3E1-D5F0-4DBE-9543-81914A4F3795}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF6F28C-F62A-4E54-AEBD-BC5FD3F34C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF6F28C-F62A-4E54-AEBD-BC5FD3F34C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF6F28C-F62A-4E54-AEBD-BC5FD3F34C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF6F28C-F62A-4E54-AEBD-BC5FD3F34C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A3A0053-E757-42EC-96B9-41545DC0E2C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A3A0053-E757-42EC-96B9-41545DC0E2C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A3A0053-E757-42EC-96B9-41545DC0E2C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A3A0053-E757-42EC-96B9-41545DC0E2C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F804C053-8817-4827-BFB4-F866E99CB4D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F804C053-8817-4827-BFB4-F866E99CB4D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F804C053-8817-4827-BFB4-F866E99CB4D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F804C053-8817-4827-BFB4-F866E99CB4D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10814E00-6022-4FF4-AC88-DC5971ACFFC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10814E00-6022-4FF4-AC88-DC5971ACFFC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10814E00-6022-4FF4-AC88-DC5971ACFFC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10814E00-6022-4FF4-AC88-DC5971ACFFC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E65232D0-FFCC-4B17-A7B4-B5A4B18495BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E65232D0-FFCC-4B17-A7B4-B5A4B18495BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E65232D0-FFCC-4B17-A7B4-B5A4B18495BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E65232D0-FFCC-4B17-A7B4-B5A4B18495BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31A36EC2-793A-4F04-9118-A463FB6AD75A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31A36EC2-793A-4F04-9118-A463FB6AD75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31A36EC2-793A-4F04-9118-A463FB6AD75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31A36EC2-793A-4F04-9118-A463FB6AD75A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9BA0F1B3-3535-48CE-8FB2-9BD358E51103}
+	EndGlobalSection
+EndGlobal

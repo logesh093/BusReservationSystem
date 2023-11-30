@@ -1,0 +1,157 @@
+﻿@model UserData.Core.Model.BusTravelScheduleModel
+
+@{
+    // Model.BusId = Convert.ToInt32(TempData["busId"]);
+    //var localDateTime = TempData["localDateTime"].ToString();
+}
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <style>
+        .my-textbox:focus {
+            background-color: rgb(237, 250, 246);
+        }
+
+        body {
+            background-color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .align {
+            margin-left: 30px;
+        }
+
+        .error {
+            color: red;
+            font-weight:900;
+        }
+
+        body.signup {
+            background: url(/Images/Signup.jpg) no-repeat;
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body class="signup">
+    <div style="margin-left: 36%;width:30%;">
+        <div>
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Message</div>
+            }
+            <h3 style="text-align :center;color:black;font-weight:700;">Bus Detail FORM</h3>
+            @using (Html.BeginForm("CreateTravelId", "BusSeatPrebook", FormMethod.Post, new { id = "formvalidation" }))
+            {
+                @Html.HiddenFor(m=>m.TravelId)
+                
+                <div>
+                    @Html.Label("Source ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.Source, null, new {@class = "my-textbox",  @placeholder="Source" ,@id="Source",style="width:100%;"})<br />
+                </div>
+
+                <div>
+                    @Html.Label("Destination ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.Destination, null, new {@class = "my-textbox",  @placeholder="Destination" ,@id="Destination",style="width:100%;"})<br />
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("Fare",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.Fare, null, new { @placeholder="Fare" , @class = "my-textbox",@id="Fare",@type="number",@minlength=10,style="width:100%;"})<br />
+                </div>
+                <div>  
+                    
+                        @Html.Label("Date and Time ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })
+
+                        <i style="color:red;">*</i>
+
+                        <br />
+                        @Html.TextBoxFor(model => model.DepatureDateTime, "{0:yyyy-MM-ddTHH:mm}", new {@class = "my-textbox",  @placeholder="DepatureDateTime" ,@id="DepatureDateTime",style="width:100%;",@type="datetime-local",@value = "2017-06-01T08:30"})
+                        <br />
+                    
+                    @*< input type = "datetime-local" id = "datetimeInput" name = "datetimeInput" value = "{{23-11-2023 23:46:00 }}" required >*@
+                </div>
+
+                <br>
+                @if (Model != null && Model.TravelId > 0)
+                {
+                    <button type="submit" class="my-textbox" style="margin-top:20px;margin-left:0px;font-weight:700;background-color:orangered;border-radius:10px;width:100%;color:white;text-align :center;">Update</button>
+                }
+                else
+                {
+                    <button type="submit" class="my-textbox" style="margin-top:20px;margin-left:0px;font-weight:700;background-color:green;border-radius:10px;width:100%;color:white;text-align :center;">Create</button>
+                }
+                <br>
+                <div>
+                    <p style="margin-left: 170px; display: inline;color:black;"><a href="#" data-toggle="tooltip" onclick="Back()" style="color:black;">Back</a></p>
+
+                </div>
+            }
+        </div>
+    </div>
+
+</body>
+
+<script>
+    function Back() {
+        location.href = "/BusSeatPrebook/GetBusTravelSchedule/";
+    }
+    $(function () {
+        // Enable the jQuery UI Datepicker on the textbox with id "dateandtime"
+        $("#DepatureDateTime").datetimepicker({
+            dateFormat: "yy-mm-dd", // Customize the date format as needed
+            timeFormat: "HH:mm:ss", // Customize the time format as needed
+            showSecond: true
+           
+        });
+    });
+
+    $("#formvalidation").validate({
+        rules: {
+            Source: {
+                required: true,
+                minlength: 3,
+                maxlength: 20,
+            },
+            Destination: {
+                required: true,
+                minlength: 3,
+                maxlength: 20,
+            },
+            Fare: {
+                required: true,
+                minlength: 3,
+                maxlength: 4,
+                digits: true,
+            },
+            DepatureDateTime:
+                {
+                required: true,
+            }
+
+        },
+        messages: {
+            Source: {
+                required: "Source field is required",
+                minlength: "Source should be a minimum of 3 characters",
+                maxlength: "Source should be a maximum of 20 characters",
+            },
+            Destination: {
+                required: "Destination field is required",
+                minlength: "Destination should be a minimum of 3 characters",
+                maxlength: "Destination should be a maximum of 20 characters",
+            },
+            Fare: {
+                required: "Fare field is required",
+                minlength: "Fare enter a valid Cost above 100",
+                digits: "Fare enter only digits",
+            },
+            DepatureDateTime:
+            {
+                required: "DepatureDateTime field is required",
+            }
+        }
+    });
+</script>
+
+

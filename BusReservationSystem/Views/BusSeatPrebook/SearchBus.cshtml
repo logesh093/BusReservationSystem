@@ -1,0 +1,112 @@
+﻿@model UserData.Core.Model.FindBus
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <title>Find Bus</title>
+    <style>
+        .align {
+            margin: 20px 20px 20px 0px;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin-left: 35%;
+            background-image: url('images\paris.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .form {
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .error{
+            color:red;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="form">
+        @using (Html.BeginForm("SearchAvailableBuses", "BusSeatPrebook", FormMethod.Post, new { @id = "formvalidation" }))
+        {
+            <div class="align">
+                @Html.Label("Source")  <br />
+                @Html.TextBoxFor(m => m.Source,new { @id = "Source" })
+                <br />
+            </div>
+            <div class="align">
+                @Html.Label("Destination")  <br />
+                @Html.TextBoxFor(m => m.Destination,new { @id = "Destination" })
+                <br />
+            </div>
+
+            <div class="align">
+                @Html.Label("Date")  <br />
+                @Html.TextBoxFor(m => m.DateTime,new{@type="datetime-local", @id="DateTime"})
+                <br />
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+
+            <br />
+           <div>
+            <p style="display: inline;"><a href="#" data-toggle="tooltip" onclick="Back()">Back</a></p>
+            </div>
+            
+        }
+
+    </div>
+</body>
+<script>
+    function Back() {
+        location.href = "/BusSeatPrebook/UserDetailPage/";
+    }
+    $.validator.addMethod("futureDateTime", function (value, element) {
+        var selectedDateTime = new Date(value);
+        var currentDateTime = new Date();
+        return selectedDateTime > currentDateTime;
+    });
+    $("#formvalidation").validate({
+        rules: {
+            Source: {
+                required: true,
+                minlength: 3,
+                maxlength: 30,
+            },
+            Destination: {
+                required: true,
+                minlength: 3,
+                maxlength: 30,
+            },
+            // DateTime: {
+                
+            //     futureDateTime:true
+            // },
+
+        },
+        messages: {
+            Source: {
+                required: "Source field is required",
+                minlength: "Source should be a minimum of 3 characters",
+                maxlength: "Source should be a maximum of 30 characters",
+            },
+            Destination: {
+                required: "Destination field is required",
+                minlength: "Destination should be a minimum of 3 characters",
+                digits: "Destination should be a maximum of 30 characters",
+            },
+            // DateTime: {
+                
+            //     futureDateTime: "Selected date must be fucture"
+            // },
+        }
+    });
+</script>

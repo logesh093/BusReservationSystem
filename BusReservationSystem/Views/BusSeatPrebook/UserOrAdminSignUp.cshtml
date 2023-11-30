@@ -1,0 +1,188 @@
+﻿@model UserData.Core.Model.UserOrAdminSignUp
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <style>
+        .my-textbox:focus {
+            background-color: rgb(237, 250, 246);
+        }
+
+        body {
+            background-color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .align {
+            margin-left: 30px;
+        }
+
+        .error {
+            color: red;
+        }
+
+        body.signup {
+            background: url(/Images/Signup.jpg) no-repeat;
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body class="signup">
+    <div style="margin-left: 36%;width:30%;">
+        <div>
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Message</div>
+            }
+            <h3 style="text-align :center;color:white;font-weight:700;">SIGNUP FORM</h3>
+            @using (Html.BeginForm("InsertUserOrAdminDetails", "BusSeatPrebook", FormMethod.Post, new { id = "formvalidation" }))
+        {
+            @Html.HiddenFor(m=>m.UserId)
+           
+                <div>
+                    @Html.Label("Name ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.Name, null, new {@class = "my-textbox",  @placeholder="Name" ,@id="Name",style="width:100%;"})<br />
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("DOB ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m => m.DOB, null, new { @class = "my-textbox", @type = "date", id = "DOB" ,@placeholder="DOB",style="width:100%;"})<br />
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("Gender",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<br />
+                        @Html.RadioButtonFor(m => m.Gender, "Male", new { id = "Gender", @class = "my-textbox" })
+
+                        @Html.Label("Male ")
+                        @Html.RadioButtonFor(m => m.Gender, "Female", new { id = "Gender", @class = "my-textbox" })
+
+                        @Html.Label("Female ")
+                        @Html.RadioButtonFor(m => m.Gender, "Other", new { id = "Gender", @class = "my-textbox" })
+
+                        @Html.Label("Other ")<br />
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("Contact",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.Phonenumber, null, new { @placeholder="Contact" , @class = "my-textbox",@id="Phonenumber",@type="number",@minlength=10,style="width:100%;"})<br />
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("Address",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextAreaFor(m => m.Address, new { @class = "form-control form-control-lg", @id = "Address", @placeholder = "Address...",style="width:100%;" })
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("Email ID ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.EmailId, null, new { @class = "my-textbox", @placeholder="Email ID" ,id="EmailId",style="width:100%;"})<br />
+                </div>
+
+                <div style="margin-top:20px;">
+                    @Html.Label("Password ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.PasswordFor(a=>a.Password,new{@type="password",@class="my-textbox",@value="",@minlength=8,@placeholder="Password",@id="Password",style="width:100%;"})
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("ConfirmPassword",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<br />
+                    @Html.PasswordFor(a=>a.ConfirmPassword,new{@type="password",@class="my-textbox",@value="",@placeholder="ConfirmPassword",@id="ConfirmPassword",style="width:100%;"})<br>
+                    <input type="checkbox" onclick="ShowPass()" style="padding:10px;margin-top:15px;" class="my-textbox"> Show Password<br>
+                    
+            </div>
+            <br>
+            <button type="submit" class="my-textbox" style="margin-top:20px;margin-left:0px;font-weight:700;background-color:green;border-radius:10px;width:100%;color:white;text-align :center;">SignUp</button>
+
+            <br>
+            <div>
+                    <p style="margin-left: 70px; display: inline;color: black; font-weight: bold;font-size:18px;">Already Have an Account?<a href="#" data-toggle="tooltip" onclick="Back()" style="margin-left:30%;">LogIn Here</a></p>
+
+            </div>
+        }
+        </div>
+    </div>
+
+</body>
+
+<script>
+    function Back() {
+        location.href = "/BusSeatPrebook/UserOrAdminLogin/";
+    }
+    $.validator.addMethod("dob18", function (value) {
+        var dob = new Date(value);
+        var currentDate = new Date();
+        var age = currentDate.getFullYear() - dob.getFullYear();
+        return age >= 18;
+    });
+    function ShowPass() {
+        var x = document.getElementById("Password");
+        var y = document.getElementById("ConfirmPassword");
+        if (x.type === "password" && y.type === "password") {
+            x.type = "text";
+            y.type = "text";
+        } else {
+            x.type = "password";
+            y.type = "password";
+        }
+    }
+
+    $("#formvalidation").validate({
+        rules: {
+            Name: {
+                required: true,
+                minlength: 3,
+                maxlength: 20,
+            },
+            Phonenumber: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                digits: true,
+            },
+            EmailId: {
+                required: true,
+                email: true,
+            },
+            Address: {
+                required: true,
+                
+            },
+            Password: {
+                required: true,
+            },
+            ConfirmPassword: {
+                required: true,
+                equalTo: "#Password",
+            },
+            DOB: {
+                  required: true,
+                  dob18: true,
+                 },
+        },
+        messages: {
+            Name: {
+                required: "Name field is required",
+                minlength: "Name should be a minimum of 3 characters",
+                maxlength: "Name should be a maximum of 20 characters",
+            },
+            Phonenumber: {
+                required: "Contact field is required",
+                minlength: "Please enter a valid contact number",
+                digits: "Please enter only digits",
+            },
+            EmailId: {
+                required: "Email field is required",
+                email: "Please enter a valid email",
+            },
+            Address: {
+                required: "Address field is required",
+            },
+            Password: {
+                required: "Password field is required",
+            },
+            ConfirmPassword: {
+                required: "Confirm password field is required",
+                equalTo: "Confirmpassword mismatch",
+            }, 
+            DOB:{
+               required: "Date Of Birth field is required",
+               dob18: "Age must be 18 years or older",
+              }
+        }
+    });
+</script>
+
+

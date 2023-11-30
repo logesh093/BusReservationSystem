@@ -1,0 +1,187 @@
+﻿@model IEnumerable<UserData.Core.Model.BusTravelScheduleModel>
+@{
+    int i = 0, availableSeats;
+    string message = TempData["Message"] != null ? TempData["Message"].ToString() : string.Empty;
+    bool isAdmin = Convert.ToBoolean(TempData["IsAdmin"]);
+
+}
+<head>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="busdashboard">
+    <header>
+@*         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+ *@            
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" style="width:auto;margin-top:2%;">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="BusSeatPrebook" asp-action="BusDashboard" style="font-weight:900;color:white;">Dashboard</a>
+                        </li>
+                        @*<li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>*@
+                    </ul>
+                </div>
+       @*  </nav> *@
+    </header>
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert alert-success" style="width:300px;margin-left:70%;">@message</div>
+    }
+    <div style="display:inline;">
+        <span><h3>WelCome To @ViewBag.BusName</h3></span>
+        @*<button style="font-size:14px;margin-left:90%;border-radius:5px;" class="btn btn-danger" onclick="BackToDashboard()">Back <i class="fa fa-sign-out" style="font-size:14px;color:white"></i></button>*@
+        @if (isAdmin)
+        {
+            <button type="submit" class="btn btn-success" onclick="FnCreateTravelId()" style="color:white;margin:20px;margin-left:0%;">Create Schedule </button>
+        }
+    </div>
+
+    <table id="example" class="table table-striped" style="width:100%;">
+        <thead>
+            <tr>
+                <th>SNo</th>
+                <th>Bus Name</th>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Fare</th>
+                <th>Departure Date and Time</th>
+                <th>Seats Available</th>
+                <th style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                availableSeats = 60 - (@item.SeatsAvailable);
+                i++;
+                <tr>
+                    <td>@i</td>
+                    <td>@ViewBag.BusName</td>
+                    <td>@item.Source</td>
+                    <td>@item.Destination</td>
+                    <td>@item.Fare</td>
+                    <td>@item.DepatureDateTime</td>
+                    <td>@availableSeats</td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-success" onclick="ViewPassengerDetail('@item.TravelId')">View Passenger</button>
+                        @if(isAdmin)
+                        {
+                            <button type="button" class="btn btn-secondary" onclick="Edit('@item.TravelId')">Edit<i class="fas fa-pencil-alt"></i></button>
+                            <button type="button" class="btn btn-danger" onclick="Delete('@item.TravelId')">Delete<i class="fas fa-trash"></i></button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+ <script>
+    new DataTable('#example');
+
+    function FnCreateTravelId() 
+    {
+        location.href = "/BusSeatPrebook/GetBusScheduleByTravelId/";
+    }
+
+    $(document).ready(function () {
+        hideAlert();
+        $('#example').DataTable();
+
+    });
+   
+    function Edit(id) {
+        
+        if (id > 0) {
+            location.href = "/BusSeatPrebook/GetBusScheduleByTravelId/?travelId=" + id;
+        }
+    }
+    function ViewPassengerDetail(travelId) {
+        if (travelId >0) {
+
+            location.href= "/BusSeatPrebook/GetTicketList/?travelId=" + travelId ;
+            
+        }
+    }
+    function BackToDashboard() {
+        if (confirm("Are you Sure Want To Go Back"))
+        {
+            location.href = "/BusSeatPrebook/BusDashboard/";
+        } 
+    }
+   
+ 
+     function Delete(travelId) 
+     {
+        Swal.fire({
+            title: 'Are you sure want to delete?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085D6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.href = "/BusSeatPrebook/DeleteBusTravel/?travelId=" + travelId;
+                Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+            }
+        })
+         
+     }
+    function hideAlert() {
+        setTimeout(function () {
+            $(".alert").fadeOut("slow");
+        }, 4000);
+    }
+    
+    function preventBack() { window.history.forward(); }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () { null };
+</script>
+<style>
+    .logoutLblPos {
+        position: fixed;
+        right: 50px;
+        top: 20px;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: white;
+      
+        margin: 10px;
+        font-weight:900;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: black;
+        border-width:none;    }
+
+    thead {
+        background-color: lightcyan;
+    }
+
+    tbody {
+        background-color: white;
+    }
+
+    body.busdashboard {
+        background: url(/Images/Passengerdetail.jpg) no-repeat;
+        background-size: cover;
+    }
+</style>

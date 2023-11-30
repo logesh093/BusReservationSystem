@@ -1,0 +1,34 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+    body.bg {
+        background: url(/Images/Passengerdetail.jpg) no-repeat;
+        background-size: cover;
+    }
+    body.bimage {
+        background: url(/Images/Paymentpage.jpg) no-repeat;
+        background-size: cover;
+    }
+    body.busdashboard {
+        background: url(/Images/BusDashboard1.jpg) no-repeat;
+        background-size: cover;
+    }
+    body.signup {
+        background: url(/Images/Signup.jpg) no-repeat;
+        background-size: cover;
+    }

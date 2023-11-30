@@ -1,0 +1,118 @@
+﻿@model UserData.Core.Model.BusMaster
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <style>
+        .my-textbox:focus {
+            background-color: rgb(237, 250, 246);
+        }
+
+        body {
+            background-color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .align {
+            margin-left: 30px;
+        }
+
+        .error {
+            color: red;
+        }
+        body.busdashboard {
+        background: url(/Images/Passengerdetail.jpg) no-repeat;
+        background-size: cover;
+    }
+    </style>
+</head>
+
+<body>
+    <div style="margin-left: 36%;width:30%;">
+        <div>
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Message</div>
+            }
+            <h3 style="text-align :center;color:green;font-weight:700;">Bus Detail FORM</h3>
+            @using (Html.BeginForm("AddOrUpdateBus", "BusSeatPrebook", FormMethod.Post, new { id = "formvalidation" }))
+            {
+                @Html.HiddenFor(m=>m.BusId)
+
+                <div>
+                    @Html.Label("BusName ",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.BusName, null, new {@class = "my-textbox",  @placeholder="BusName" ,@id="BusName",style="width:100%;"})<br />
+                </div>
+                
+                <div style="margin-top:20px;">
+                    @Html.Label("Window Seats",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.WindowSeats, null, new { @placeholder="Window Seats" , @class = "my-textbox",@id="WindowSeats",@type="number",@minlength=2,style="width:100%;"})<br />
+                </div>
+                <div style="margin-top:20px;">
+                    @Html.Label("Non-Window Seats",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
+                    @Html.TextBoxFor(m=>m.NonWindowSeats, null, new { @placeholder="Non-Window Seats" , @class = "my-textbox",@id="NonWindowSeats",@type="number",@minlength=10,style="width:100%;"})<br />
+                </div>
+
+                
+                <br>
+                <button type="submit" class="my-textbox" style="margin-top:20px;margin-left:0px;font-weight:700;background-color:green;border-radius:10px;width:100%;color:white;text-align :center;">Create</button>
+
+                <br>
+                <div>
+                    <p style="margin-left: 70px; display: inline;"><a href="#" data-toggle="tooltip" onclick="Back()">Back</a></p>
+
+                </div>
+            }
+        </div>
+    </div>
+
+</body>
+
+<script>
+    function Back() {
+        location.href = "/BusSeatPrebook/BusDashboard/";
+    }
+    
+
+    $("#formvalidation").validate({
+        rules: {
+            BusName: {
+                required: true,
+                minlength: 3,
+                maxlength: 20,
+            },
+            WindowSeats: {
+                required: true,
+                minlength: 2,
+                maxlength: 3,
+                digits: true,
+            },
+            NonWindowSeats: {
+                required: true,
+                minlength: 2,
+                maxlength: 3,
+                digits: true,
+            },
+            
+        },
+        messages: {
+            BusName: {
+                required: "BusName field is required",
+                minlength: "BusName should be a minimum of 3 characters",
+                maxlength: "BusName should be a maximum of 20 characters",
+            },
+            WindowSeats: {
+                required: "WindowSeats field is required",
+                minlength: "Please enter a valid Seat count",
+                digits: "Please enter only digits",
+            },
+            NonWindowSeats: {
+                required: "NonWindowSeats field is required",
+                minlength: "Please enter a valid Seat count",
+                digits: "Please enter only digits",
+            },
+        }
+    });
+</script>
+
+

@@ -1,0 +1,236 @@
+﻿@model UserData.Core.Model.PaymentModel
+@{
+    // int totalcost = ViewBag.Totalticketcost;
+    // Model.TotalAmount = totalcost;
+    // int ticketfare = ViewBag.fare;
+
+    // int reservedcount = totalcost / ticketfare;
+    // Model.TotalSeatsReserved = reservedcount;
+    List<string> paymentMethods = new List<string>(new string[] { "Credit Card", "Debit Card" });
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<style>
+    body.signup {
+        background: url(/Images/Signup.jpg) no-repeat;
+        background-size: cover;
+    }
+
+    .form {
+        margin-left: 5%;
+        margin-top: 5%;
+        width: 18%;
+    }
+
+    .error {
+        color: red;
+        font-weight:700;
+    }
+
+    #SelectedPaymentMethod {
+        width: 250px;
+    }
+</style>
+
+<body class="signup">
+    <div class="form">
+        @using (Html.BeginForm("PaymentSuccess", "BusSeatPrebook", FormMethod.Post, new { id = "formvalidation" }))
+        {
+            @Html.HiddenFor(m=>m.TotalAmount)
+            @Html.HiddenFor(m=>m.TotalSeatsReserved)
+            @Html.HiddenFor(m=>m.BusId)
+            <p style="color:yellow;"><strong>Have to pay @Model.TotalAmount to confirm ticket</strong></p>
+
+            <b style="color:black;"> @Html.Label("Payment method")<i style="color:red;">*</i></b>
+            <br />
+            @Html.DropDownListFor(m => m.SelectedPaymentMethod, new SelectList(paymentMethods, paymentMethods.FirstOrDefault()),new {@class = "form-control select-add-placeholder" , @id ="SelectedPaymentMethod"})
+
+            <br />
+
+            <b style="color:black;">@Html.Label("Holder name")<i style="color:red;">*</i></b>
+            <br />
+            @Html.TextBoxFor(model => model.HolderName, new { @placeholder = "Holder name", @class = "dropdown", @id = "HolderName" })
+            <br />
+
+            <b style="color:black;">@Html.Label("Card number")<i style="color:red;">*</i></b>
+            <br />
+            @Html.TextBoxFor(model => model.CardNumber, new { @placeholder = "Card number", @class = "my-textbox", @minlength = 11, @maxlength = 11, @id = "CardNumber", @type = "text" })
+            <br />
+
+            <b style="color:black;">@Html.Label("CVV")<i style="color:red;">*</i></b>
+            <br />
+            @Html.TextBoxFor(model => model.CVV, new { @placeholder = "CVV", @class = "my-textbox", @minlength = 3, @maxlength = 3, @id = "CVV", @type = "password" })
+            <br />
+
+            <br />
+
+            <button type="submit" onclick="payment()" class="btn btn-success" style="color:white;font-weight:900;">Pay</button>
+             <a class="btn btn-danger" asp-area="" asp-controller="BusSeatPrebook" asp-action="UserDetailPage" style="color:white;font-weight:900;">Back</a>
+        }
+    </div>
+</body>
+<script>
+    function payment() {
+        
+        if ($("#formvalidation").valid()) {
+
+            Swal.fire({
+                title: 'Are you sure you want to Pay?',
+                text: "Rupees @Model.TotalAmount",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085D6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Pay'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.href = "/BusSeatPrebook/PaymentSuccess/";
+                    Swal.fire(
+                        'Payment!',
+                        'Payment Paid',
+                        'Successfully'
+                    )
+                }
+
+            // if (confirm("Are you sure want to pay")) {
+            //     location.href = "/BusSeatPrebook/PaymentSuccess/";
+            // }
+            })
+        }
+    }
+
+
+    $(".select-add-placeholder").prepend("<option value='' disabled selected>--Select Payment---</option>");
+        $("#formvalidation").validate({
+            rules: {
+                SelectedPaymentMethod: {
+                    required: true,
+
+                },
+                HolderName: {
+                    required: true,
+                    minlength: 3,
+                },
+                CardNumber: {
+                    required: true,
+                    minlength: 11,
+                    digits: true,
+                },
+                CVV: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 3,
+                    digits: true,
+                },
+            },
+            messages: {
+                SelectedPaymentMethod: {
+                    required: "Payment method field is required",
+                },
+                HolderName: {
+                    required: "Holder name field is required",
+                    minlength: "Holder name length minimum 3 characters",
+                },
+                CardNumber: {
+                    required: "Card number field is required",
+                    minlength: "Card number must be at least 11 characters long",
+                    digits: "Please enter only digits",
+                },
+                CVV: {
+                    required: "CVV field is required",
+                    minlength: "CVV must be 3 characters long",
+                    maxlength: "CVV must be 3 characters long",
+                    digits: "Please enter only digits",
+                },
+            }
+        });
+
+
+        // $(document).ready(function () {
+            
+
+        //     function payment() {
+               
+        //         if ($("#formvalidation").valid()) {
+        //             Swal.fire({
+        //                 title: 'Are you sure you want to Pay?',
+        //                 text: "I confirm to pay",
+        //                 icon: 'warning',
+        //                 showCancelButton: true,
+        //                 confirmButtonColor: '#3085D6',
+        //                 cancelButtonColor: '#d33',
+        //                 confirmButtonText: 'Yes, Pay'
+        //             }).then((result) => {
+        //                 if (result.isConfirmed) {
+        //                     location.href = "/BusSeatPrebook/PaymentSuccess/";
+        //                     Swal.fire(
+        //                         'Payment!',
+        //                         'success'
+        //                     )
+        //                 }
+        //             });
+        //         }
+        //     }
+
+        //     $("#formvalidation").validate({
+        //         rules: {
+        //             SelectedPaymentMethod: {
+        //                 required: true,
+
+        //             },
+        //             HolderName: {
+        //                 required: true,
+        //                 minlength: 3,
+        //             },
+        //             CardNumber: {
+        //                 required: true,
+        //                 minlength: 11,
+        //                 digits: true,
+        //             },
+        //             CVV: {
+        //                 required: true,
+        //                 minlength: 3,
+        //                 maxlength: 3,
+        //                 digits: true,
+        //             },
+        //         },
+        //         messages: {
+        //             SelectedPaymentMethod: {
+        //                 required: "Payment method field is required",
+        //             },
+        //             HolderName: {
+        //                 required: "Holder name field is required",
+        //                 minlength: "Holder name length minimum 3 characters",
+        //             },
+        //             CardNumber: {
+        //                 required: "Card number field is required",
+        //                 minlength: "Card number must be at least 11 characters long",
+        //                 digits: "Please enter only digits",
+        //             },
+        //             CVV: {
+        //                 required: "CVV field is required",
+        //                 minlength: "CVV must be 3 characters long",
+        //                 maxlength: "CVV must be 3 characters long",
+        //                 digits: "Please enter only digits",
+        //             },
+        //         }
+        //                 errorPlacement: function (error, element) {
+        //             if (element.parent(".input-icon-container").length) {
+
+        //                 error.insertAfter(element.parent(".input-icon-container"));
+        //             } else {
+        //                 error.insertAfter(element);
+        //             }
+        //         },
+        //     });
+        // });
+</script>
+
+</html>

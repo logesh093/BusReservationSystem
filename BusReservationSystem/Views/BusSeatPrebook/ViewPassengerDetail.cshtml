@@ -1,0 +1,156 @@
+﻿@model IEnumerable<UserData.Core.Model.PassengerDetails>
+@{
+    int i = 0;
+    string message = TempData["Message"] != null ? TempData["Message"].ToString() : string.Empty;
+}
+<head>
+
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+    .logoutLblPos {
+        position: fixed;
+        right: 50px;
+        top: 20px;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: white;
+        margin: 10px;
+        font-weight: 900;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: black;
+    }
+
+    thead {
+        background-color: lightcyan;
+    }
+
+    tbody {
+        background-color: white;
+    }
+
+
+    .backgroundImage {
+        background: url(/Images/Passengerdetail.jpg) no-repeat;
+        background-size: cover;
+    }
+</style>
+<body class="backgroundImage">
+    
+    
+
+    <table id="CompletedJourny" class="table table-striped" style="width:100%;">
+        <thead>
+            <nav>
+                <ul>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="BusSeatPrebook" asp-action="UserDetailPage">Home</a>
+                    </li>
+                </ul>
+                
+            </nav>
+            <div style="width:18%;background-color:whitesmoke;border-radius:5px;">
+                <h4 style="color:black;font-weight:bolder">Passenger Details</h4>
+            </div>
+            <tr>
+                <th>SNo</th>
+                <th>Passenger Name</th>
+                <th>Age</th>
+                <th>Seat Number</th>
+                <th>Ticket Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+
+                i++;
+                <tr>
+                    <td>@i</td>
+                    <td>@item.PassengerName</td>
+                    <td>@item.Age</td>
+                    <td>@item.Seatno</td>
+                    @if(item.IsCanceled)
+                    {
+                        <td style="color:red">Canceled</td>
+                    }
+                    else
+                    {
+                        <td style="color:green">Confiremed</td>
+                    }
+                    <td style="text-align:center;">
+                        @if (item.IsCanceled)
+                        {
+                        <p style="color:red;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">Ticket Canceled</p>
+                        }
+                        else
+                        {
+                        <button type="button" class="btn btn-danger" onclick="Cancel(@item.PassengerId)">Cancel</button>
+                        }
+                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    
+    new DataTable('#CompletedJourny');
+    
+    
+    function Cancel(passengerId) {
+       
+            Swal.fire({
+                title: 'Are you sure want to cancel ticket?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                showconfirmButton:true,
+                confirmButtonColor: '#3085D6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                location.href = "/BusSeatPrebook/CancelTicket/?passengerId=" + passengerId;
+                    Swal.fire(
+                        'Canceled!',
+                        'Your ticket has been canceled.',
+                        'success'
+                    )
+                }
+            })
+    }
+    
+    $(document).ready(function () {
+        hideAlert();
+        $('#CompletedJourny').DataTable();
+
+    });
+
+    
+    function hideAlert() {
+        setTimeout(function () {
+            $(".alert").fadeOut("slow");
+        }, 4000);
+    }
+
+
+    function preventBack() { window.history.forward(); }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () { null };
+</script>

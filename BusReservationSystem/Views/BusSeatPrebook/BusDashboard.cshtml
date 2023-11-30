@@ -1,0 +1,170 @@
+﻿@model IEnumerable<UserData.Core.Model.BusMaster>
+@{
+    int i = 0;
+    string message = TempData["Message"] != null ? TempData["Message"].ToString() : string.Empty;
+    bool isAdmin = Convert.ToBoolean(TempData["IsAdmin"]);
+
+}
+<head>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="busdashboard">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BusReservationSystem</a> *@
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="BusSeatPrebook" asp-action="BusDashboard">Dashboard</a>
+                        </li>
+                        @*<li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>*@
+
+                    </ul>
+                    <button style="font-size:14px;margin-left:80%;border-radius:5px;" class="btn btn-danger" onclick="LogoutDashboard()">Logout <i class="fa fa-sign-out" style="font-size:14px;color:white"></i></button>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert alert-success" style="width:300px;margin-left:70%;">@message</div>
+    }
+    <div style="display:inline;">
+        <span><h3>Buses Available</h3></span>
+        
+        @if (isAdmin)
+        {
+            <button type="submit" class="btn btn-success" onclick="FnCreateBus()" style="color:white;margin:20px;margin-left:0%;">Add Bus </button>
+        }
+    </div>
+
+    <table id="example" class="table table-striped" style="width:100%;">
+        <thead>
+            <tr>
+                <th>SNo</th>
+                <th>Bus Name</th>
+                <th>Number Of Window Seats</th>
+                <th>Number Of Non-Window Seats</th>
+                <th style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+
+                i++;
+                <tr>
+                    <td>@i</td>
+                    <td>@item.BusName</td>
+                    <td>@item.WindowSeats</td>
+                    <td>@item.NonWindowSeats</td>
+                    <td style="text-align:center;">
+                        @if(isAdmin)
+                        {
+                            <button type="button" class="btn btn-success" onclick="Schedule(@item.BusId)">View<i class="fa fa-eye"></i></button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    new DataTable('#example');
+    function FnCreateBus() {
+        location.href = "/BusSeatPrebook/AddOrUpdateBus/";
+    }
+    $(document).ready(function () {
+        hideAlert();
+        $('#example').DataTable();
+
+    });
+    
+    function Schedule(id) {
+        if (id > 0) {
+            top.location.href = "/BusSeatPrebook/GetBusTravelSchedule/?BusId=" + id;
+        }
+    }
+    function LogoutDashboard()
+    {
+        // if (confirm("Are you Sure Want To Logout?"))
+        // {
+        //     location.href = "/Student/StudentLogIn/";
+        // }
+        Swal.fire({
+            title: 'Are you sure want to logout?',
+            text: "You are logout from this page",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085D6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.href = "/BusSeatPrebook/UserOrAdminLogin/";
+                Swal.fire(
+                    'logout!',
+                    'success'
+                )
+            }
+        })
+    }
+    function hideAlert() {
+        setTimeout(function () {
+            $(".alert").fadeOut("slow");
+        }, 4000);
+    }
+
+    
+    function preventBack() { window.history.forward(); }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () { null };
+</script>
+<style>
+    .logoutLblPos {
+        position: fixed;
+        right: 50px;
+        top: 20px;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: white;
+        margin: 10px;
+        font-weight:900;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: black;
+    }
+
+    thead {
+        background-color: lightcyan;
+    }
+
+    tbody {
+        background-color: white;
+    }
+
+    body.busdashboard {
+        background: url(/Images/Passengerdetail.jpg) no-repeat;
+        background-size: cover;
+    }
+</style>

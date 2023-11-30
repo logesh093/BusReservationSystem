@@ -1,0 +1,134 @@
+﻿@model UserData.Core.Model.FindBus
+@{
+    List<string> stopList = new List<string>(new string[] { "Erode", "Chennai", "Coimbatore", "Kerala", "Thirupadi", "Bengalur", "Kumbakonam" });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    
+    <title>Find Bus</title>
+    <style>
+        .align {
+            margin: 20px 20px 20px 0px;
+        }
+
+        .select-add-Source, .select-add-Destination {
+            width: 50%;
+        }
+       
+
+        .form {
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .error {
+            color: red;
+            font-weight:700;
+        }
+
+    </style>
+</head>
+<body style="background-color:lightgoldenrodyellow">
+ <center>
+    <div >
+        @using (Html.BeginForm("SearchAvailableBuses", "BusSeatPrebook", FormMethod.Post, new { @id = "formvalidation" }))
+        {
+            <div class="align">
+                    <b>@Html.Label("Source")  <br /></b>
+                    @Html.DropDownListFor(m => m.Source, new SelectList(stopList, stopList.FirstOrDefault()),new {@class = "form-control select-add-Source" , id ="Source"})
+               
+                <br />
+            </div>
+            <div class="align">
+                    <b>@Html.Label("Destination")  <br /></b>
+                    @Html.DropDownListFor(m => m.Destination, new SelectList(stopList, stopList.FirstOrDefault()),new {@class = "form-control select-add-Destination" , id ="Destination"})
+
+                <br />
+            </div>
+
+            <div class="align">
+                    <b>@Html.Label("Date")  <br /></b>
+                @Html.TextBoxFor(m => m.DateTime,new{@type="datetime-local", @id="DateTime"})
+                <br />
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+
+            <br />
+            
+
+        }
+
+    </div>
+  </center>
+</body>
+<script>
+    $(".select-add-Source").prepend("<option value='' disabled selected>--Select Source---</option>");
+    $(".select-add-Destination").prepend("<option value='' disabled selected>--Select Destination---</option>");
+    function Back() {
+        location.href = "/BusSeatPrebook/UserDetailPage/";
+    }
+    
+    // $("#formvalidation").validate({
+    //     rules:
+    //     {
+    //         Source: {
+    //             required: true,
+    //             maxlength: 20,
+    //         },
+    //         Destination: {
+    //             required: true,
+    //             maxlength: 100,
+    //         },
+            
+    //     },
+    //     messages: {
+    //         Source: {
+    //             required: "Name field is required",
+    //             maxlength: "Please enter a maximum of 20 characters",
+    //         },
+    //         Destination: {
+    //             required: "Address field is required",
+    //             maxlength: "Address must be less than 100 characters",
+    //         },
+            
+    //     }
+    // });
+
+    $("#formvalidation").validate({
+        rules: {
+            Source: {
+                required: true,
+               
+            },
+            Destination: {
+                required: true,
+               
+            },
+            // DateTime: {
+
+            //     futureDateTime:true
+            // },
+
+        },
+        messages: {
+            Source: {
+                required: "Source field is required",
+                
+            },
+            Destination: {
+                required: "Destination field is required",
+               
+            },
+            // DateTime: {
+
+            //     futureDateTime: "Selected date must be fucture"
+            // },
+        }
+
+    });
+</script>
+
+
