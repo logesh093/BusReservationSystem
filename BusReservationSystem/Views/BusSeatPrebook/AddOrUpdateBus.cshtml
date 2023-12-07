@@ -19,22 +19,27 @@
 
         .error {
             color: red;
+            font-weight:700;
         }
-        body.busdashboard {
-        background: url(/Images/Passengerdetail.jpg) no-repeat;
-        background-size: cover;
+
+        body.signup {
+            background: url(/Images/Signup.jpg) no-repeat;
+            background-size: cover;
+        }
+
+        
     }
     </style>
 </head>
 
-<body>
+<body class="signup">
     <div style="margin-left: 36%;width:30%;">
         <div>
             @if (ViewBag.Message != null)
             {
                 <div class="alert alert-danger">@ViewBag.Message</div>
             }
-            <h3 style="text-align :center;color:green;font-weight:700;">Bus Detail FORM</h3>
+            <h3 style="text-align :center;color:green;font-weight:700;">Add New Bus</h3>
             @using (Html.BeginForm("AddOrUpdateBus", "BusSeatPrebook", FormMethod.Post, new { id = "formvalidation" }))
             {
                 @Html.HiddenFor(m=>m.BusId)
@@ -50,7 +55,7 @@
                 </div>
                 <div style="margin-top:20px;">
                     @Html.Label("Non-Window Seats",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
-                    @Html.TextBoxFor(m=>m.NonWindowSeats, null, new { @placeholder="Non-Window Seats" , @class = "my-textbox",@id="NonWindowSeats",@type="number",@minlength=10,style="width:100%;"})<br />
+                    @Html.TextBoxFor(m=>m.NonWindowSeats, null, new { @placeholder="Non-Window Seats" , @class = "my-textbox",@id="NonWindowSeats",@type="number",@minlength=2,style="width:100%;"})<br />
                 </div>
 
                 
@@ -59,7 +64,7 @@
 
                 <br>
                 <div>
-                    <p style="margin-left: 70px; display: inline;"><a href="#" data-toggle="tooltip" onclick="Back()">Back</a></p>
+                    <p><a href="#" data-toggle="tooltip" onclick="Back()" style="margin-left: 45%; display: inline;color:black;">Back</a></p>
 
                 </div>
             }
@@ -102,13 +107,15 @@
                 maxlength: "BusName should be a maximum of 20 characters",
             },
             WindowSeats: {
-                required: "WindowSeats field is required",
-                minlength: "Please enter a valid Seat count",
+                required: "Window Seats field is required",
+                minlength: "Please enter a valid Seat count grater than 10",
+                maxlength: "Please enter a valid Seat count less than 99",
                 digits: "Please enter only digits",
             },
             NonWindowSeats: {
-                required: "NonWindowSeats field is required",
-                minlength: "Please enter a valid Seat count",
+                required: "Non-Window Seats field is required",
+                minlength: "Please enter a valid Seat count grater than 10",
+                maxlength: "Please enter a valid Seat count less than 99",
                 digits: "Please enter only digits",
             },
         }

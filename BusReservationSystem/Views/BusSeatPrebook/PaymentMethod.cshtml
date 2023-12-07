@@ -61,7 +61,7 @@
 
             <b style="color:black;">@Html.Label("Card number")<i style="color:red;">*</i></b>
             <br />
-            @Html.TextBoxFor(model => model.CardNumber, new { @placeholder = "Card number", @class = "my-textbox", @minlength = 11, @maxlength = 11, @id = "CardNumber", @type = "text" })
+            @Html.TextBoxFor(model => model.CardNumber, new { @placeholder = "Card number", @class = "my-textbox", @minlength = 11, @maxlength = 16, @id = "CardNumber", @type = "text" })
             <br />
 
             <b style="color:black;">@Html.Label("CVV")<i style="color:red;">*</i></b>
@@ -71,7 +71,7 @@
 
             <br />
 
-            <button type="submit" onclick="payment()" class="btn btn-success" style="color:white;font-weight:900;">Pay</button>
+            <button type="button" onclick="payment()" class="btn btn-success" style="color:white;font-weight:900;">Pay</button>
              <a class="btn btn-danger" asp-area="" asp-controller="BusSeatPrebook" asp-action="UserDetailPage" style="color:white;font-weight:900;">Back</a>
         }
     </div>
@@ -90,18 +90,10 @@
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, Pay'
             }).then((result) => {
-                if (result.isConfirmed) {
-                    location.href = "/BusSeatPrebook/PaymentSuccess/";
-                    Swal.fire(
-                        'Payment!',
-                        'Payment Paid',
-                        'Successfully'
-                    )
+                if (result.isConfirmed) 
+                {
+                    $("#formvalidation").submit();
                 }
-
-            // if (confirm("Are you sure want to pay")) {
-            //     location.href = "/BusSeatPrebook/PaymentSuccess/";
-            // }
             })
         }
     }
@@ -120,7 +112,7 @@
                 },
                 CardNumber: {
                     required: true,
-                    minlength: 11,
+                    minlength: 16,
                     digits: true,
                 },
                 CVV: {
@@ -140,7 +132,7 @@
                 },
                 CardNumber: {
                     required: "Card number field is required",
-                    minlength: "Card number must be at least 11 characters long",
+                    minlength: "Card number must be at least 16 characters long",
                     digits: "Please enter only digits",
                 },
                 CVV: {
@@ -231,6 +223,9 @@
         //         },
         //     });
         // });
+    function preventBack() { window.history.forward(); }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () { null };
 </script>
 
 </html>

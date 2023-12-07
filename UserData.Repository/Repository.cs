@@ -130,7 +130,7 @@ namespace UserData.Repository
             BusMaster BusDetail=new BusMaster();
             using (var connections = Connection)
             {
-                var BusData = (connections.Query<BusMaster>(DapperSql.GetDataById,
+                var BusData = (connections.Query<BusMaster>(DapperSql.GetBusDataById,
                 new
                 {
                     @id = busId,
@@ -144,7 +144,7 @@ namespace UserData.Repository
         }
         #endregion
 
-        #region
+        #region Add Or Update Bus
         public bool AddOrUpdateBus(BusMaster busDetails)
         {
             if (busDetails.BusId > 0)
@@ -217,7 +217,7 @@ namespace UserData.Repository
 
 
         #region Create Travel by bus id
-        public bool CreateTravelId(BusTravelScheduleModel busDetails)
+        public bool CreateOrUpdateTravelId(BusTravelScheduleModel busDetails)
         {
             bool Iscreated = false;
             using (var connections = Connection)
@@ -366,6 +366,7 @@ namespace UserData.Repository
                         @passengername =passengerDetails.PassengerName,
                         @age=passengerDetails.Age,
                         @seatno=passengerDetails.Seatno,
+                        @referenceid=passengerDetails.referenceId,
                        
                     }));
                     IsInserted = true;
@@ -457,15 +458,14 @@ namespace UserData.Repository
         #endregion
 
         #region Insert Payment Details
-        public List<PaymentModel> InsertPaymentDetail(PaymentModel paymentDetail)
+        public bool InsertPaymentDetail(PaymentModel paymentDetail)
         {
             bool IsInserted = false;
             using (var connections = Connection)
             {
                 if (paymentDetail.TravelId > 0)
                 {
-                    Random generator = new Random();
-                    String reference = generator.Next(0, 1000000).ToString("D6");
+                    
                     var SeatlList = (connections.Query<PassengerDetails>(DapperSql.InsertPaymentDeatils,
                     new
                     {
@@ -476,31 +476,20 @@ namespace UserData.Repository
                         @totalamount=paymentDetail.TotalAmount,
                         @holdername=paymentDetail.HolderName,
                         @cardnumber=paymentDetail.CardNumber,
-                        @referenceid=reference,
+                        @referenceid=paymentDetail.ReferenceId,
                         @cardtype=paymentDetail.SelectedPaymentMethod,
                         
                     }));
                     var updaterefid = (connections.Query<TicketDetail>(DapperSql.UpdateRef,
                     new
                     {
-                        @userid = paymentDetail.UserId,
-                        @travelid = paymentDetail.TravelId,
-                       
-                        @referenceid = reference,
+                        @referenceid = paymentDetail.ReferenceId,
                     }));
-                    var Ticketdetail = (connections.Query<PaymentModel>(DapperSql.Downloadticket,
-                    new
-                    {
-                        @userid = paymentDetail.UserId,
-                        @travelid = paymentDetail.TravelId,
-                        @busid = paymentDetail.BusId,
-                        @referenceid= reference,
-
-                    }).ToList());
-                    return Ticketdetail;
+                    IsInserted = true;
+                    return IsInserted;
                 }
 
-                return null;
+                return IsInserted;
             }
 
         }
@@ -575,6 +564,57 @@ namespace UserData.Repository
 
         }
         #endregion
+
+        #region Download ticket
+        public DownloadTicket DownloadTicket(int travelId, int userId)
+        {
+
+            using (var connections = Connection)
+            {
+                if (travelId > 0 && userId > 0)
+                {
+                    var ticket = (connections.Query<DownloadTicket>(DapperSql.Downloadticket, new
+                    {
+                        @userid = userId,
+                        @travelid = travelId,
+                        
+                    })).FirstOrDefault();
+
+
+
+                    return ticket;
+                }
+
+                return null;
+            }
+
+        }
+        public List<PassengerList> GetPassenger(int referenceId)
+        {
+
+            using (var connections = Connection)
+            {
+                if (referenceId>0)
+                {
+                    var ticket = (connections.Query<PassengerList>(DapperSql.Getpassenger, new
+                    {
+                        @referenceid=referenceId,
+
+                    })).ToList();
+
+
+
+                    return ticket;
+                }
+
+                return null;
+            }
+
+        }
+        #endregion
+
+
+
         public bool VerifyPassword(string password, string hash, byte[] salt)
         {
             const int keySize = 64;

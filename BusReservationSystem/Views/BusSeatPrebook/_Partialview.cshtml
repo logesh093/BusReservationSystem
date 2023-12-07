@@ -14,7 +14,8 @@
         .select-add-Source, .select-add-Destination {
             width: 50%;
         }
-       
+
+        
 
         .form {
             width: 300px;
@@ -37,13 +38,13 @@
         @using (Html.BeginForm("SearchAvailableBuses", "BusSeatPrebook", FormMethod.Post, new { @id = "formvalidation" }))
         {
             <div class="align">
-                    <b>@Html.Label("Source")  <br /></b>
+                    <b>@Html.Label("Source")<i style="color:red;">*</i>  <br /></b>
                     @Html.DropDownListFor(m => m.Source, new SelectList(stopList, stopList.FirstOrDefault()),new {@class = "form-control select-add-Source" , id ="Source"})
                
                 <br />
             </div>
             <div class="align">
-                    <b>@Html.Label("Destination")  <br /></b>
+                    <b>@Html.Label("Destination")<i style="color:red;">*</i>  <br /></b>
                     @Html.DropDownListFor(m => m.Destination, new SelectList(stopList, stopList.FirstOrDefault()),new {@class = "form-control select-add-Destination" , id ="Destination"})
 
                 <br />

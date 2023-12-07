@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace UserData.Core.Model
 {
-    public class BookTicket
+    public class PassengerList
     {
-        public int Seatno {  get; set; }
-        public int IsSeatAvailable { get; set; }
+        public string Name {  get; set; }
+        public int Age { get; set; }
+        public int Seatno { get; set; }
     }
 }

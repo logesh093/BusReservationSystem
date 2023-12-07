@@ -16,18 +16,20 @@ namespace UserData.Core.IRepository
         public bool AddOrUpdateBus(BusMaster busDetails);
         public List<BusTravelScheduleModel> GetBusTravelSchedule(int busId);
         public BusTravelScheduleModel GetBusScheduleByTravelId(int travelId);
-        public bool CreateTravelId(BusTravelScheduleModel busDetails);
+        public bool CreateOrUpdateTravelId(BusTravelScheduleModel busDetails);
         public List<UserDetailList> UserDetailPage(int UserId);
         public UserPage UserProfile(int UserId);
         public List<BusTravelScheduleModel> SearchAvailableBuses(FindBus SearchDetails);
         public List<BookTicket> GetBookedSeatno(int travelId);
         public bool InsertPassengerDeatil(PassengerDetails passengerDetails);
-        public List<PaymentModel> InsertPaymentDetail(PaymentModel paymentDetail);
+        public bool InsertPaymentDetail(PaymentModel paymentDetail);
         public List<PassengerDetails> ViewPassengerDetail(PassengerDetails passengerDetails);
         public bool CancelTicket(int passengerId);
         public List<PassengerDetails> GetTicketList(int travelId);
         public bool DeleteBusTravel(int travelId);
         public PaymentModel GetFare(int travelId);
         public FindBus GetReferenceId(int travelId, int busId, int userId);
+        public DownloadTicket DownloadTicket(int travelId, int userId);
+        public List<PassengerList> GetPassenger(int referenceId);
     }
 }

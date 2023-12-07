@@ -11,6 +11,7 @@ namespace UserData.Core.Model
         public string? SelectedPaymentMethod {  get; set; }
         public string? HolderName { get; set; }
         public string? CardNumber { get; set;}
+        public string? BusName { get; set; }
         public int UserId { get; set; }
         public int TravelId { get; set;}
         public int BusId { get; set; }
@@ -21,6 +22,7 @@ namespace UserData.Core.Model
         public string? PassengerName { get; set; }
         public int Age { get; set; }
         public int Seatno { get; set; }
+        public int ReferenceId {  get; set; }
         
     }
 }

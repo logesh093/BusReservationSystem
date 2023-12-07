@@ -13,6 +13,41 @@
     <link rel="stylesheet" href="sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+    .logoutLblPos {
+        position: fixed;
+        right: 50px;
+        top: 20px;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: white;
+        margin: 10px;
+        font-weight:900;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        border: 2px solid white;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: black;
+    }
+
+    thead {
+        background-color: lightcyan;
+    }
+
+    tbody {
+        background-color: white;
+    }
+
+    body.busdashboard {
+        background: url(/Images/Passengerdetail.jpg) no-repeat;
+        background-size: cover;
+    }
+</style>
 </head>
 <body class="busdashboard">
     <header>
@@ -138,33 +173,3 @@
     setTimeout("preventBack()", 0);
     window.onunload = function () { null };
 </script>
-<style>
-    .logoutLblPos {
-        position: fixed;
-        right: 50px;
-        top: 20px;
-    }
-
-    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
-        color: white;
-        margin: 10px;
-        font-weight:900;
-    }
-
-    tbody, td, tfoot, th, thead, tr {
-        border-color: black;
-    }
-
-    thead {
-        background-color: lightcyan;
-    }
-
-    tbody {
-        background-color: white;
-    }
-
-    body.busdashboard {
-        background: url(/Images/Passengerdetail.jpg) no-repeat;
-        background-size: cover;
-    }
-</style>

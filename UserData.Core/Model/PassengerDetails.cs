@@ -14,8 +14,8 @@ namespace UserData.Core.Model
         public int UserId { get; set; }
         public int BusId { get; set; }
         public string? PassengerName { get; set; }
-        public int Age { get; set;}
-        public int Seatno { get; set;}
+        public int? Age { get; set;}
+        public int? Seatno { get; set;}
         //public int TicketId { get; set;}
         public int Fare { get; set;}
         public List<BookTicket>? seatnoList { get; set; }

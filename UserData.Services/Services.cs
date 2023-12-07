@@ -10,7 +10,7 @@ using UserData.Core.Model;
 
 namespace UserData.Services
 {
-    public class Services:IServices
+    public class Services : IServices
     {
         private readonly IRepository _repository;
         public Services(IRepository repository)
@@ -45,9 +45,9 @@ namespace UserData.Services
         {
             return _repository.GetBusScheduleByTravelId(travelId);
         }
-        public bool CreateTravelId(BusTravelScheduleModel busDetails)
+        public bool CreateOrUpdateTravelId(BusTravelScheduleModel busDetails)
         {
-            return _repository.CreateTravelId(busDetails);
+            return _repository.CreateOrUpdateTravelId(busDetails);
         }
         public List<UserDetailList> UserDetailPage(int UserId)
         {
@@ -69,7 +69,7 @@ namespace UserData.Services
         {
             return _repository.InsertPassengerDeatil(passengerDetails);
         }
-        public List<PaymentModel> InsertPaymentDetail(PaymentModel paymentDetail)
+        public bool InsertPaymentDetail(PaymentModel paymentDetail)
         {
             return _repository.InsertPaymentDetail(paymentDetail);
         }
@@ -91,11 +91,20 @@ namespace UserData.Services
         }
         public FindBus GetReferenceId(int travelId, int busId, int userId)
         {
-            return _repository.GetReferenceId( travelId, busId,  userId);
+            return _repository.GetReferenceId(travelId, busId, userId);
         }
         public PaymentModel GetFare(int travelId)
         {
             return _repository.GetFare(travelId);
+        }
+        public DownloadTicket DownloadTicket(int travelId, int userId)
+        {
+            return _repository.DownloadTicket(travelId, userId);
+        }
+
+        public List<PassengerList> GetPassenger(int referenceId)
+        {
+            return _repository.GetPassenger(referenceId);
         }
     }
 }

@@ -4,10 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Linq;
 using System.Net.Http.Json;
 using System.Reflection;
+using System.Security.Cryptography.Xml;
 using System.Security.Principal;
 using System.Xml.Linq;
 using UserData.Core.Model;
@@ -130,14 +134,14 @@ namespace BusReservationSystem.webSolution.Controllers
 
         #region View Passenger Details
         [HttpGet]
-        public IActionResult ViewPassengerDetail(int referenceId,int ticketId)
+        public IActionResult ViewPassengerDetail(int referenceId, int ticketId)
         {
             PassengerDetails passengerDetails = new PassengerDetails();
-           
+
             passengerDetails.referenceId = referenceId;
             passengerDetails.ticketId = ticketId;
             passengerDetails.UserId = Convert.ToInt32(HttpContext.Session.GetString("userId"));
-            
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/ViewPassengerDetail");
@@ -147,6 +151,7 @@ namespace BusReservationSystem.webSolution.Controllers
                     var passengerList = checkresult.Content.ReadFromJsonAsync<List<PassengerDetails>>().Result;
                     if (passengerList != null)
                     {
+                       
                         View(passengerList);
                     }
 
@@ -155,35 +160,35 @@ namespace BusReservationSystem.webSolution.Controllers
                 return View();
             }
         }
-            [HttpGet]
-            public IActionResult CancelTicket(int passengerId)
+        [HttpGet]
+        public IActionResult CancelTicket(int passengerId)
+        {
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
+                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/CancelTicket");
+                var Posttask = client.GetAsync("CancelTicket?passengerId=" + passengerId);
+                Posttask.Wait();
+                var checkresult = Posttask.Result;
+                if (checkresult.IsSuccessStatusCode)
                 {
-                    client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/CancelTicket");
-                    var Posttask = client.GetAsync("CancelTicket?passengerId=" + passengerId);
-                    Posttask.Wait();
-                    var checkresult = Posttask.Result;
-                    if (checkresult.IsSuccessStatusCode)
+                    bool IsCanceled = checkresult.Content.ReadFromJsonAsync<bool>().Result;
+                    if (IsCanceled)
                     {
-                        bool IsCanceled = checkresult.Content.ReadFromJsonAsync<bool>().Result;
-                        if(IsCanceled)
-                        {
                         return RedirectToAction("UserDetailPage");
-                        }
                     }
-                    return View(false);
                 }
+                return View(false);
             }
-        
-    
+        }
+
+
         #endregion
 
         #region Get Bus DashBoard
         [HttpGet]
         public IActionResult BusDashboard()
         {
-            TempData["IsAdmin"]= HttpContext.Session.GetString("IsAdmin");
+            TempData["IsAdmin"] = HttpContext.Session.GetString("IsAdmin");
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBusDashboard");
@@ -207,7 +212,7 @@ namespace BusReservationSystem.webSolution.Controllers
         [HttpGet]
         public IActionResult AddOrUpdateBus(int busId)
         {
-            
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBusDetailById");
@@ -218,7 +223,7 @@ namespace BusReservationSystem.webSolution.Controllers
                 {
                     BusMaster BusDetails = checkresult.Content.ReadFromJsonAsync<BusMaster>().Result;
                     return View(BusDetails);
-                    
+
                 }
                 return View();
             }
@@ -247,7 +252,7 @@ namespace BusReservationSystem.webSolution.Controllers
                 }
                 return RedirectToAction("BusDashboard");
             }
-            
+
         }
         #endregion
 
@@ -255,11 +260,15 @@ namespace BusReservationSystem.webSolution.Controllers
         [HttpGet]
         public IActionResult GetBusTravelSchedule(int busId)
         {
-            if(busId > 0)
+            if (HttpContext.Session.GetString("busId")!=null && busId==0)
+            {
+                busId = Convert.ToInt32(HttpContext.Session.GetString("busId"));
+            }
+            if (busId > 0)
             {
                 HttpContext.Session.SetString("busId", busId.ToString());
                 //TempData["busId"] = busId;
-                
+
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBusDetailById");
@@ -270,15 +279,15 @@ namespace BusReservationSystem.webSolution.Controllers
                     {
                         BusMaster BusDetails = checkresult.Content.ReadFromJsonAsync<BusMaster>().Result;
                         HttpContext.Session.SetString("busname", BusDetails.BusName.ToString());
-                        
+
                     }
                 }
             }
-            ViewBag.BusName = HttpContext.Session.GetString("busname"); ;
+            ViewBag.BusName = HttpContext.Session.GetString("busname"); 
             TempData["IsAdmin"] = HttpContext.Session.GetString("IsAdmin");
             busId = Convert.ToInt32(HttpContext.Session.GetString("busId"));
-                using (var client = new HttpClient())
-                {
+            using (var client = new HttpClient())
+            {
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBusTravelSchedule");
                 var Posttask = client.GetAsync("GetBusTravelSchedule?busId=" + busId);
                 Posttask.Wait();
@@ -286,12 +295,12 @@ namespace BusReservationSystem.webSolution.Controllers
                 if (checkresult.IsSuccessStatusCode)
                 {
                     var BusSchedule = checkresult.Content.ReadFromJsonAsync<List<BusTravelScheduleModel>>().Result;
-                    
-                    if (BusSchedule!=null)
+
+                    if (BusSchedule != null)
                     {
                         return View(BusSchedule);
                     }
-                    
+
                 }
                 return View();
             }
@@ -302,10 +311,10 @@ namespace BusReservationSystem.webSolution.Controllers
         [HttpGet]
         public IActionResult GetBusScheduleByTravelId(int travelId)
         {
-            
+
             using (var client = new HttpClient())
             {
-                if(travelId > 0)
+                if (travelId > 0)
                 {
                     client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBusScheduleByTravelId");
                     var Posttask = client.GetAsync("GetBusScheduleByTravelId?travelId=" + travelId);
@@ -315,30 +324,30 @@ namespace BusReservationSystem.webSolution.Controllers
                     {
                         BusTravelScheduleModel BusDetails = checkresult.Content.ReadFromJsonAsync<BusTravelScheduleModel>().Result;
                         if (BusDetails != null)
-                        {    
+                        {
                             return View(BusDetails);
                         }
 
                     }
                 }
-                
+
                 return View();
             }
         }
         [HttpPost]
-        public IActionResult CreateTravelId(BusTravelScheduleModel busDetails)//continue with
+        public IActionResult CreateOrUpdateTravelId(BusTravelScheduleModel busDetails)//continue with
         {
             
             busDetails.BusId = Convert.ToInt32(HttpContext.Session.GetString("busId"));
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/CreateTravelId");
-                var Posttask = client.PostAsJsonAsync<BusTravelScheduleModel>(client.BaseAddress, busDetails);
-                Posttask.Wait();
-                var checkresult = Posttask.Result;
+                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/CreateOrUpdateTravelId");
+                var checkresult = client.PostAsJsonAsync<BusTravelScheduleModel>(client.BaseAddress, busDetails).Result;
+                
+                
                 if (checkresult.IsSuccessStatusCode)
                 {
-                    var result = checkresult.Content.ReadFromJsonAsync<bool>().Result;
+                    bool result = checkresult.Content.ReadFromJsonAsync<bool>().Result;
                     if (result == true)
                     {
                         TempData["Message"] = "Travel Id Created Successfully...";
@@ -349,19 +358,19 @@ namespace BusReservationSystem.webSolution.Controllers
                     }
                 }
                 return RedirectToAction("GetBusTravelSchedule", new { busId = busDetails.BusId });
-            }
+            } 
 
         }
         #endregion
 
         #region Book Ticket
         [HttpGet]
-        public IActionResult GetTicketCount(int ticketCount,int travelId)//restart
-        {    
+        public IActionResult GetTicketCount(int ticketCount, int travelId)//restart
+        {
             HttpContext.Session.SetString("TravelId", (travelId).ToString());
 
-            PassengerDetails passengerDetails=new PassengerDetails();
-            passengerDetails.Count= ticketCount;
+            PassengerDetails passengerDetails = new PassengerDetails();
+            passengerDetails.Count = ticketCount;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBookedSeatno");
@@ -371,24 +380,33 @@ namespace BusReservationSystem.webSolution.Controllers
                 if (checkresult.IsSuccessStatusCode)
                 {
                     passengerDetails.seatnoList = checkresult.Content.ReadFromJsonAsync<List<BookTicket>>().Result;
-                    
+                    if (TempData["SelectedSeatno"] != null)
+                    {
+
+                        BookTicket no = new BookTicket();
+                        no.Seatno = Convert.ToInt32(TempData["SelectedSeatno"]);
+                        passengerDetails.seatnoList.Add(no);
+                    }
                     return View(passengerDetails);
                 }
             }
-                return View();
+            return View();
         }
         [HttpPost]
         public IActionResult GetTicketCount(PassengerDetails pasengerDetail)
         {
-            if(pasengerDetail!=null)
+            if (pasengerDetail != null)
             {
+
                 if (pasengerDetail.Fare == 0)
                 {
                     TempData["ticketcount"] = pasengerDetail.Count + 1;
                 }
+
                 PassengerDetails PassengerDetails = new PassengerDetails();
                 using (var client = new HttpClient())
                 {
+                    pasengerDetail.referenceId=Convert.ToInt32(HttpContext.Session.GetString("ReferenceId"));
                     pasengerDetail.UserId = Convert.ToInt32(HttpContext.Session.GetString("userId"));
                     client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/InsertPassengerDeatil");
                     var Posttask = client.PostAsJsonAsync<PassengerDetails>(client.BaseAddress, pasengerDetail);
@@ -399,28 +417,31 @@ namespace BusReservationSystem.webSolution.Controllers
                         bool Isinserted = checkresult.Content.ReadFromJsonAsync<bool>().Result;
                         if (pasengerDetail.Count > 0)
                         {
-                            using (var client1 = new HttpClient())
-                            {
-                                pasengerDetail.TravelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
-                                client1.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBookedSeatno");
-                                var Posttask1 = client1.GetAsync("GetBookedSeatno?travelId=" + pasengerDetail.TravelId);
-                                Posttask1.Wait();
-                                var checkresult1 = Posttask1.Result;
-                                if (checkresult1.IsSuccessStatusCode)
-                                {
-                                    PassengerDetails.seatnoList = checkresult1.Content.ReadFromJsonAsync<List<BookTicket>>().Result;
+                            TempData["SelectedSeatno"] = pasengerDetail.Seatno;
+                            //using (var client1 = new HttpClient())
+                            //{
+                            //    pasengerDetail.TravelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
+                            //    client1.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBookedSeatno");
+                            //    var Posttask1 = client1.GetAsync("GetBookedSeatno?travelId=" + pasengerDetail.TravelId);
+                            //    Posttask1.Wait();
+                            //    var checkresult1 = Posttask1.Result;
+                            //    if (checkresult1.IsSuccessStatusCode)
+                            //    {
+                            //        PassengerDetails.seatnoList = checkresult1.Content.ReadFromJsonAsync<List<BookTicket>>().Result;
 
-                                }
-                            }
+                            //    }
+                            //}
                             TempData["passengerCount"] = pasengerDetail.passengercount;
-                            return RedirectToAction("GetTicketCount", new { ticketCount = pasengerDetail.Count, travelId = pasengerDetail.TravelId, });
+                            return RedirectToAction("GetTicketCount", new { ticketCount = pasengerDetail.Count, travelId = pasengerDetail.TravelId });
                         }
 
                         return RedirectToAction("PaymentMethod");
                     }
                 }
+
+
             }
-            
+
             return View();
         }
 
@@ -442,15 +463,15 @@ namespace BusReservationSystem.webSolution.Controllers
                     if (checkresult.IsSuccessStatusCode)
                     {
                         List<PassengerDetails> TicketList = checkresult.Content.ReadFromJsonAsync<List<PassengerDetails>>().Result;
-                        
+
                         return View(TicketList);
-                        
+
                     }
 
                 }
                 return View();
             }
-           
+
         }
         #endregion
 
@@ -472,8 +493,8 @@ namespace BusReservationSystem.webSolution.Controllers
                         if (IsDeleted)
                         {
                             TempData["Message"] = "Travel Deleted successfully!!!";
-                            int busId= Convert.ToInt32(HttpContext.Session.GetString("busId"));
-                            return RedirectToAction("GetBusTravelSchedule", new {busId});
+                            int busId = Convert.ToInt32(HttpContext.Session.GetString("busId"));
+                            return RedirectToAction("GetBusTravelSchedule", new { busId });
                         }
 
                     }
@@ -489,7 +510,7 @@ namespace BusReservationSystem.webSolution.Controllers
         [HttpGet]
         public IActionResult PaymentMethod()
         {
-            using(var client = new HttpClient()) 
+            using (var client = new HttpClient())
             {
                 int travelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetFare");
@@ -498,7 +519,7 @@ namespace BusReservationSystem.webSolution.Controllers
                 var checkresult = Posttask.Result;
                 if (checkresult.IsSuccessStatusCode)
                 {
-                    
+
                     PaymentModel paymentModel = checkresult.Content.ReadFromJsonAsync<PaymentModel>().Result;
                     paymentModel.TotalSeatsReserved = Convert.ToInt32(TempData["ticketcount"]);
                     paymentModel.TotalAmount = paymentModel.TotalSeatsReserved * paymentModel.Fare;
@@ -506,16 +527,16 @@ namespace BusReservationSystem.webSolution.Controllers
                 }
                 return View(null);
             }
-            
-                
+
+
         }
         [HttpPost]
         public IActionResult PaymentSuccess(PaymentModel paymentDetail)
         {
-            
+
             paymentDetail.TravelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
             paymentDetail.UserId = Convert.ToInt32(HttpContext.Session.GetString("userId"));
-            
+            paymentDetail.ReferenceId = Convert.ToInt32(HttpContext.Session.GetString("ReferenceId"));
             
             using (var client = new HttpClient())
             {
@@ -523,32 +544,41 @@ namespace BusReservationSystem.webSolution.Controllers
                 var checkresult = client.PostAsJsonAsync<PaymentModel>(client.BaseAddress, paymentDetail).Result;
                 if (checkresult.IsSuccessStatusCode)
                 {
-                    List<PaymentModel> ticketdetail = checkresult.Content.ReadFromJsonAsync<List<PaymentModel>>().Result;
+                    bool IsInserted = checkresult.Content.ReadFromJsonAsync<bool>().Result;
 
-                    //TicketDetail passengerDetails = new TicketDetail();
-                    //using(var client1=new HttpClient())
-                    //{
-                    //    client1.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetReferenceId");
-                    //    var checkresult1 = client.GetAsync("GetReferenceId?travelId=" + paymentDetail.TravelId + "&busId=" + paymentDetail.BusId+"&userId=" + paymentDetail.UserId).Result;
-                    //    if (checkresult1.IsSuccessStatusCode)
-                    //    {
-                    //        //var ticket= checkresult1.Content.ReadFromJsonAsync<FindBus>().Result;
-                    //        //passengerDetails.ticketdetails = ticketdetail;
-                    //        //passengerDetails.Source = ticket.Source;
-                    //        //passengerDetails.Destination = ticket.Destination;
-                    //        //passengerDetails.Date = ticket.DateTime;
-                    //        //passengerDetails.ReferenceId = ticket.ReferenceId;
-
-                    //        TempData["Message"] = "Ticket Booked Successfully..";
-                    //        return View(passengerDetails);
-                    //    }
-                    //}   
+                }
+            }
+            DownloadTicket ticketdetail = new DownloadTicket();
+            using (var client = new HttpClient())
+            {
+                int travelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
+                int userId = Convert.ToInt32(HttpContext.Session.GetString("userId"));
+                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/DownloadTicket");
+                var checkresult = client.GetAsync("DownloadTicket?travelId=" + travelId + "&userId=" + userId).Result;
+                if (checkresult.IsSuccessStatusCode)
+                {
+                    var ticket = checkresult.Content.ReadFromJsonAsync<DownloadTicket>().Result;
+                    ticketdetail.Source = ticket.Source;
+                    ticketdetail.Destination = ticket.Destination;
+                    ticketdetail.Date = ticket.Date;
+                    ticketdetail.ReferenceId = ticket.ReferenceId;
+                    ticketdetail.BusName = HttpContext.Session.GetString("busname");
+                }
+            }
+            using (var client = new HttpClient())
+            {
+                int referenceId = Convert.ToInt32(HttpContext.Session.GetString("ReferenceId"));
+                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetPassenger");
+                var checkresult = client.GetAsync("GetPassenger?referenceId=" + referenceId).Result;
+                if (checkresult.IsSuccessStatusCode)
+                {
+                    List<PassengerList> passengerlist = checkresult.Content.ReadFromJsonAsync<List<PassengerList>>().Result;
+                    ticketdetail.passengerLists = passengerlist;
                     TempData["Message"] = "Ticket Booked Successfully..";
-                    return RedirectToAction("UserDetailPage");
+                    return View(ticketdetail);
                 }
                 return View();
             }
-            
         }
         #endregion
 
@@ -558,7 +588,9 @@ namespace BusReservationSystem.webSolution.Controllers
         [HttpPost]
         public IActionResult SearchAvailableBuses(FindBus SearchDetails)
         {
-            
+            Random generator = new Random();
+            String reference = generator.Next(0, 1000000).ToString("D6");
+            HttpContext.Session.SetString("ReferenceId", reference);
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/SearchAvailableBuses");
@@ -567,7 +599,7 @@ namespace BusReservationSystem.webSolution.Controllers
                 var checkresult = Posttask.Result;
                 if (checkresult.IsSuccessStatusCode)
                 {
-                     var BusList = checkresult.Content.ReadFromJsonAsync<List<BusTravelScheduleModel>>().Result;
+                    var BusList = checkresult.Content.ReadFromJsonAsync<List<BusTravelScheduleModel>>().Result;
                     return View(BusList);
                 }
                 return View();
@@ -580,6 +612,30 @@ namespace BusReservationSystem.webSolution.Controllers
         public IActionResult _Partialview()
         {
             return PartialView("_Partialview");
+        }
+
+
+        [HttpPost]
+        public JsonResult CheckSeatAvailability(int bookedSeats)
+        {
+            bool IscontainsItem = false;
+            using (var client = new HttpClient())
+            {
+                int travelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
+                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBookedSeatno");
+                var Posttask = client.GetAsync("GetBookedSeatno?travelId=" + travelId);
+                Posttask.Wait();
+                var checkresult = Posttask.Result;
+                if (checkresult.IsSuccessStatusCode)
+                {
+                    var seatnoList = checkresult.Content.ReadFromJsonAsync<List<BookTicket>>().Result;
+                    IscontainsItem = seatnoList.Any(item => item.Seatno == bookedSeats);
+
+                    return Json(!IscontainsItem);
+                }
+            }
+
+            return Json(IscontainsItem);
         }
     }
 }

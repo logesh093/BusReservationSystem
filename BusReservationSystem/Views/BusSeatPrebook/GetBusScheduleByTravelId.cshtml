@@ -42,7 +42,7 @@
                 <div class="alert alert-danger">@ViewBag.Message</div>
             }
             <h3 style="text-align :center;color:black;font-weight:700;">Bus Detail FORM</h3>
-            @using (Html.BeginForm("CreateTravelId", "BusSeatPrebook", FormMethod.Post, new { id = "formvalidation" }))
+            @using (Html.BeginForm("CreateOrUpdateTravelId", "BusSeatPrebook", FormMethod.Post, new { id = "formvalidation" }))
             {
                 @Html.HiddenFor(m=>m.TravelId)
                 
@@ -57,7 +57,7 @@
                 </div>
                 <div style="margin-top:20px;">
                     @Html.Label("Fare",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<i style="color:red;">*</i><br />
-                    @Html.TextBoxFor(m=>m.Fare, null, new { @placeholder="Fare" , @class = "my-textbox",@id="Fare",@type="number",@minlength=10,style="width:100%;"})<br />
+                    @Html.TextBoxFor(m=>m.Fare, null, new { @placeholder="Fare" , @class = "my-textbox",@id="Fare",@type="number",style="width:100%;"})<br />
                 </div>
                 <div>  
                     

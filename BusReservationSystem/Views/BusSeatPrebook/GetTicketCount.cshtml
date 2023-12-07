@@ -1,6 +1,8 @@
 ﻿@model UserData.Core.Model.PassengerDetails;
 @{
-    if (TempData["passengerCount"]!=null)
+    string error = TempData["Error"] != null ? TempData["Error"].ToString() : string.Empty;
+
+    if (TempData["passengerCount"] != null)
     {
         Model.passengercount = Convert.ToInt32(TempData["passengerCount"]) + 1;
         Model.Fare = 1;
@@ -12,22 +14,27 @@
     }
     // Model.passengercount = ViewBag.passengerCount != null ? ViewBag.passengerCount + 1 : Model.passengercount++;
     Model.Count--;
-    
+
 }
 <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 </head>
 <style>
-    .bg {
-        background: url(/Images/Passengerdetail.jpg) no-repeat;
+    body.signup {
+        background: url(/Images/Signup.jpg) no-repeat;
         background-size: cover;
     }
 
     .form {
         margin-left: 60%;
         margin-top: 5%;
-        width:15%;
+        width: 15%;
+    }
+
+    .my-textbox::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 
     .error {
@@ -35,7 +42,7 @@
         font-weight: 900;
     }
 </style>
-<body class="bg">
+<body class="signup">
     <div class="form">
         <h4>Seats Booked List</h4>
         @if (Model.seatnoList.Count > 0)
@@ -62,6 +69,7 @@
             @Html.HiddenFor(m=>m.Count)
             @Html.HiddenFor(m=>m.TravelId)
             @Html.HiddenFor(m=>m.passengercount)
+            @Html.HiddenFor(m=>m.seatnoList)
             <div class="align">
                 <b style="color:yellow;font-weight:900;">@Html.Label("Name")<i style="color:red;">*</i>  <br /></b>
                 @Html.TextBoxFor(m => m.PassengerName,new { @id = "PassengerName",@placeholder="Name",@value = ""})
@@ -69,13 +77,12 @@
             </div>
             <div class="align">
                 <b style="color:yellow;font-weight:900;">@Html.Label("Age")<i style="color:red;">*</i>  <br /></b>
-                @Html.TextBoxFor(m=>m.Age, new { @placeholder="Age" , @class = "my-textbox",@id="Age",@type="number",@value=""})
+                @Html.TextBoxFor(m=>m.Age, new { @placeholder="Age" , @class = "my-textbox",@id="Age",@type="number"})
                 <br />
             </div>
-
             <div class="align">
                 <b style="color:yellow;font-weight:900;">@Html.Label("SeatNumber")<i style="color:red;">*</i>  <br /></b>
-                @Html.TextBoxFor(m => m.Seatno,new{@typ="number",@placeholder="Seatnumber",@id="Seatno",@value=""})
+                @Html.TextBoxFor(m=>m.Seatno, new { @placeholder="Seatnumber" , @class = "my-textbox",@id="Seatnumber",@type="number"})
                 <br />
                 <br />
             </div>
@@ -89,20 +96,36 @@
 
 </body>
 <script>
-    
+    // if (!string.IsNullOrEmpty(error))
+    // {
+    //     alert("Seat number not available choose another...");
+    // }
+    // debugger;
+    // var myArray = [];
+    // if(Model.seatnoList!=null)
+    // {
+    //     foreach (var d in Model.seatnoList)
+    //     {
+    //         myArray.push(d.Seatno);
+    //     }
+    // }
+
+
     $.validator.addMethod("age", function (value) {
-        
-        return value >0 && value<=100;
+
+        return value > 0 && value <= 100;
     });
     $.validator.addMethod("seatno", function (value) {
 
         return value > 0 && value <= 60;
     });
     // $.validator.addMethod("seatnoIsavailable", function (value) {
+    //     debugger;
+    //     if (myArray != null && value > 0) {
+    //         return !myArray.Contains(value);
+    //     }
+    //     return true;
 
-    //     Model.IsSeatAvailable=value;
-    //     return !Model.seatnoList.Contains(Model.IsSeatAvailable);
-                
     // });
 
     $("#formvalidation").validate({
@@ -110,19 +133,32 @@
         {
             PassengerName: {
                 required: true,
-                minlength:3,
+                minlength: 3,
                 maxlength: 20,
             },
             Age: {
                 required: true,
                 digits: true,
-                age:true,
+                age: true,
             },
             Seatno: {
                 required: true,
                 digits: true,
-                seatno:true,
-                seatnoIsavailable:true,
+                seatno: true,
+                // seatnoIsavailable:true,
+                remote:
+                {
+                    url: '/BusSeatPrebook/CheckSeatAvailability/', // Endpoint to check seat availability
+                    type: 'post',
+                    data:
+                    {
+                        bookedSeats: function () {
+
+                            var userinput = $('#Seatnumber').val();
+                            return userinput; // Pass the booked seat numbers directly from the model
+                        }
+                    }
+                }
             },
         },
         messages: {
@@ -134,17 +170,22 @@
             Age: {
                 required: "Age field is required",
                 digits: "Age contain only numeric",
-                age:"Age must be grater than 5 and less than 100"
+                age: "Age must be grater than 5 and less than 100"
             },
             Seatno: {
                 required: "Seat number field is required",
                 digits: "Seat number contains only numeric",
-                seatno:"Seat number must be grater than 0 and less than 60",
-                seatnoIsavailable:"Seat number not available",
+                seatno: "Seat number must be grater than 0 and less than 60",
+                remote: "Seat number not available",
             },
         }
     });
-    function resetForm() {
-        document.getElementById("form").reset();
-    }
+        // var myArray = [];
+        // myArray = myArray;
+        // $.validator.addMethod("seatnoIsavailable", function (value) {
+        //     if (myArray != null) {
+        //         return myArray.includes(value);
+        //     }
+        //     return true;
+        // });
 </script>

@@ -8,6 +8,11 @@
             background-color: rgb(237, 250, 246);
         }
 
+        .my-textbox::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         body {
             background-color: white;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -80,7 +85,7 @@
                 <div style="margin-top:20px;">
                     @Html.Label("ConfirmPassword",null, new { style = "color: black; font-weight: bold;margin:5px;font-size:18px;" })<br />
                     @Html.PasswordFor(a=>a.ConfirmPassword,new{@type="password",@class="my-textbox",@value="",@placeholder="ConfirmPassword",@id="ConfirmPassword",style="width:100%;"})<br>
-                    <input type="checkbox" onclick="ShowPass()" style="padding:10px;margin-top:15px;" class="my-textbox"> Show Password<br>
+                    <input type="checkbox" onclick="ShowPass()" style="padding:10px;margin-top:15px;font-weight:400;" class="my-textbox"> Show Password<br>
                     
             </div>
             <br>
@@ -88,7 +93,7 @@
 
             <br>
             <div>
-                    <p style="margin-left: 70px; display: inline;color: black; font-weight: bold;font-size:18px;">Already Have an Account?<a href="#" data-toggle="tooltip" onclick="Back()" style="margin-left:30%;">LogIn Here</a></p>
+                    <p style="margin-left: 65px; display: inline;color: lightblue; font-weight: bold;font-size:18px;">Already Have an Account?<a href="#" data-toggle="tooltip" onclick="Back()" style="margin-left:30%;">LogIn Here</a></p>
 
             </div>
         }
@@ -183,6 +188,16 @@
               }
         }
     });
+
+    function clearMessage() {
+        setTimeout(function () {
+            var messageElement = document.querySelector('.alert');
+            if (messageElement) {
+                messageElement.style.display = 'none';
+            }
+        }, 5000);
+    }
+    window.addEventListener('load', clearMessage);
 </script>
 
 

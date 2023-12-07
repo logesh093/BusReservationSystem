@@ -99,11 +99,19 @@ namespace BusReservation.API.Controllers
         #endregion
         #region Create Travel Id
         [HttpPost]
-        [Route("CreateTravelId")]
-        public IActionResult CreateTravelId(BusTravelScheduleModel busDetails)
+        [Route("CreateOrUpdateTravelId")]
+        public IActionResult CreateOrUpdateTravelId(BusTravelScheduleModel busDetails)
         {
-            bool IsCreated= _services.CreateTravelId(busDetails);
-            return Ok(IsCreated);
+
+            bool isAdded = _services.CreateOrUpdateTravelId(busDetails);
+            if (isAdded == true)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
         }
         #endregion
 
@@ -158,7 +166,7 @@ namespace BusReservation.API.Controllers
         [Route("InsertPaymentDetail")]
         public IActionResult InsertPaymentDetail(PaymentModel paymentDetail)
         {
-           var IsInserted = _services.InsertPaymentDetail(paymentDetail);
+           bool IsInserted = _services.InsertPaymentDetail(paymentDetail);
             return Ok(IsInserted);
         }
         #endregion
@@ -183,6 +191,25 @@ namespace BusReservation.API.Controllers
         }
         #endregion
 
+        #region Download ticket 
+        [HttpGet]
+        [Route("DownloadTicket")]
+        public IActionResult DownloadTicket(int travelId, int userId)
+        {
+            var TicketList = _services.DownloadTicket(travelId,userId);
+            return Ok(TicketList);
+        }
+        #endregion
+
+        #region Get passenger for ticket download 
+        [HttpGet]
+        [Route("GetPassenger")]
+        public IActionResult GetPassenger(int referenceId)
+        {
+            var TicketList = _services.GetPassenger(referenceId);
+            return Ok(TicketList);
+        }
+        #endregion
         #region Delete Bus Travel
         [HttpGet]
         [Route("DeleteBusTravel")]
