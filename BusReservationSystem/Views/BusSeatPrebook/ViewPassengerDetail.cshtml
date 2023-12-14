@@ -28,6 +28,16 @@
 
         .dataTables_wrapper .dataTables_filter input {
             border: 2px solid white;
+            color: white;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            padding: 5px;
+            background-color: #563737;
+            color: inherit;
+            padding: 4px;
         }
 
     tbody, td, tfoot, th, thead, tr {
@@ -103,7 +113,7 @@
                     }
                     else
                     {
-                        <td style="color:green">Confiremed</td>
+                        <td style="color:green">Confirmed</td>
                     }
                     <td style="text-align:center;">
                         @if (item.IsCanceled)

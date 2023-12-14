@@ -26,6 +26,17 @@
 
         .dataTables_wrapper .dataTables_filter input {
             border: 2px solid white;
+            
+            color:white;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            padding: 5px;
+            background-color: #563737;
+            color: inherit;
+            padding: 4px;
         }
 
     tbody, td, tfoot, th, thead, tr {
@@ -57,7 +68,7 @@
                <table>
                 
                 <button style="font-size:14px;margin-left:91%;margin-top:2%;border-radius:5px;" class="btn btn-danger" onclick="LogoutDashboard()">Logout <i class="fa fa-sign-out" style="font-size:14px;color:white"></i></button>
-                <p id="currentTime" style="color:blue;font-weight:500;"></p>
+                <p id="currentTime" style="color:white;font-weight:500;"></p>
                     <tr>
                         <td><b>User Name</b></td>
                         <td>:</td>
@@ -87,7 +98,7 @@
     
     <table id="CompletedJourny" class="table table-striped" style="width:100%;">
         <thead>
-            <div style="width:20%;background-color:whitesmoke;border-radius:5px;">
+            <div style="width:17%;background-color:whitesmoke;border-radius:5px;">
                 <h5 style="color:black;font-weight:bolder">History of booking</h5>
             </div>
             <tr>
@@ -245,7 +256,7 @@
     window.onunload = function () { null };
 
     function showTime() {
-        document.getElementById('currentTime').innerHTML = new Date().toUTCString();
+        document.getElementById('currentTime').innerHTML = new Date().toString();
     }
     showTime();
     setInterval(function () {

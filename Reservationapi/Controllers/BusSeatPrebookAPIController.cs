@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Documents;
+using System;
 using System.Reflection;
 using UserData.Core.IServices;
 using UserData.Core.Model;
@@ -249,6 +251,14 @@ namespace BusReservation.API.Controllers
             return Ok(TicketList);
         }
         #endregion
+
+        [HttpGet]
+        [Route("GetBusName")]
+        public IActionResult GetBusName(int travelId)
+        {
+            var busName = _services.GetBusName(travelId);
+            return Ok(busName);
+        }
     }
 
 

@@ -8,11 +8,11 @@ namespace UserData.Core.Model
 {
     public class DownloadTicket
     {
-        public string Source {  get; set; } 
-        public string BusName { get; set; }
-        public string Destination { get; set; }
+        public string? Source {  get; set; } 
+        public string? BusName { get; set; }
+        public string? Destination { get; set; }
         public DateTime Date { get; set; }
         public int ReferenceId { get; set; }
-        public List<PassengerList> passengerLists { get; set; }
+        public List<PassengerList>? passengerLists { get; set; }
     }
 }

@@ -1,5 +1,17 @@
 ﻿@model UserData.Core.Model.PassengerDetails;
 @{
+    int len = (Model != null && Model.seatnoList != null) ? Model.seatnoList.Count : 0;
+    int[] myArray = new int[len];
+    if (Model?.seatnoList != null)
+    {
+        int i = 0;
+        foreach (var d in Model.seatnoList)
+        {
+            myArray[i] = d.Seatno;
+            i++;
+        }
+    }
+
     string error = TempData["Error"] != null ? TempData["Error"].ToString() : string.Empty;
 
     if (TempData["passengerCount"] != null)
@@ -24,75 +36,134 @@
     body.signup {
         background: url(/Images/Signup.jpg) no-repeat;
         background-size: cover;
+        
     }
 
     .form {
-        margin-left: 60%;
+        margin-left: 40%;
         margin-top: 5%;
-        width: 15%;
+        width: 30%;
     }
 
     .my-textbox::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }
-
+    .split
+    {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        /* height: 500px;*/
+        text-align: center;
+    }
+    .left
+    {
+        margin-left:10px;
+        width:40%;
+        border-color:1px black;
+    }
+    
     .error {
         color: red;
-        font-weight: 900;
+        font-weight: 500;
     }
 </style>
 <body class="signup">
-    <div class="form">
-        <h4>Seats Booked List</h4>
-        @if (Model.seatnoList.Count > 0)
-        {
-            @foreach (var seatno in Model.seatnoList)
-            {
-                @seatno.Seatno
+    <div class="split">
+        <div class="left">
+            @{
+                for (int i = 0; i < 12; i++)
+                {
 
-                <br />
+
+                    for (int a = i * 5; a < (5 * (i + 1)); a++)
+                    {
+                        int sum = a + 1;
+                        if(myArray.Contains(sum))
+                        {
+                            <Span style="color:white;font-weight:500;color:red;margin:0% 2% 2% 2%;">@sum</Span>
+                        }
+                        else
+                        {
+                            <Span style="color:white;font-weight:500;color:yellow;margin:0% 2% 2% 2%;">@sum</Span>
+                        }
+                       
+                    }
+
+                    <br />
+                    for (int a = i * 5; a < (5 * (i + 1)); a++)
+                    {
+                        int sum = a + 1;
+                        if (myArray.Contains(sum))
+                        {
+                            <input type="checkbox" name="vehicle3" disabled value="Boat" checked style="margin:0% 2% 2% 2%;">
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="vehicle2" disabled value="Car" style="margin:0% 2% 2% 2%;">
+                        }
+                    }
+
+                    <br />
+                }
+
+
             }
+        </div>
+        <div>
+            <div class="form">
+                @* <h4>Seats Booked List</h4>
+                @if (Model.seatnoList.Count > 0)
+                {
+                    @foreach (var seatno in Model.seatnoList)
+                    {
+                        @seatno.Seatno
 
-        }
-        else
-        {
-            <h5>No Seats Booked Yet</h5>
-        }
+                        <br />
+                    }
 
-        @using (Html.BeginForm("GetTicketCount", "BusSeatPrebook", FormMethod.Post, new { @id = "formvalidation", @onsubmit = "resetForm();" }))
-        {
+                }
+                else
+                {
+                    <h5>No Seats Booked Yet</h5>
+                } *@
 
-            <h4>Passenger @Model.passengercount</h4>
-            @Html.HiddenFor(m=>m.Fare)
-            @Html.HiddenFor(m=>m.UserId)
-            @Html.HiddenFor(m=>m.Count)
-            @Html.HiddenFor(m=>m.TravelId)
-            @Html.HiddenFor(m=>m.passengercount)
-            @Html.HiddenFor(m=>m.seatnoList)
-            <div class="align">
-                <b style="color:yellow;font-weight:900;">@Html.Label("Name")<i style="color:red;">*</i>  <br /></b>
-                @Html.TextBoxFor(m => m.PassengerName,new { @id = "PassengerName",@placeholder="Name",@value = ""})
-                <br />
+                @using (Html.BeginForm("GetTicketCount", "BusSeatPrebook", FormMethod.Post, new { @id = "formvalidation", @onsubmit = "resetForm();" }))
+                {
+
+                    <h4>Passenger @Model.passengercount</h4>
+                    @Html.HiddenFor(m=>m.Fare)
+                    @Html.HiddenFor(m=>m.UserId)
+                    @Html.HiddenFor(m=>m.Count)
+                    @Html.HiddenFor(m=>m.TravelId)
+                    @Html.HiddenFor(m=>m.passengercount)
+                    @Html.HiddenFor(m=>m.seatnoList)
+                    <div class="align">
+                        <b style="color:yellow;font-weight:900;margin-left:0px;">@Html.Label("Name")<i style="color:red;">*</i>  <br /></b>
+                        @Html.TextBoxFor(m => m.PassengerName,new { @id = "PassengerName",@placeholder="Name",@value = ""})
+                        <br />
+                    </div>
+                    <div class="align">
+                        <b style="color:yellow;font-weight:900;">@Html.Label("Age")<i style="color:red;">*</i>  <br /></b>
+                        @Html.TextBoxFor(m=>m.Age, new { @placeholder="Age" , @class = "my-textbox",@id="Age",@type="number"})
+                        <br />
+                    </div>
+                    <div class="align">
+                        <b style="color:yellow;font-weight:900;">@Html.Label("Seatnumber")<i style="color:red;">*</i>  <br /></b>
+                        @Html.TextBoxFor(m=>m.Seatno, new { @placeholder="Seatnumber" , @class = "my-textbox",@id="Seatnumber",@type="number"})
+                        <br />
+                        <br />
+                    </div>
+                    <button type="submit" class="btn btn-success" style="font-weight:900;">Submit</button>
+
+                    <a class="btn btn-danger" asp-area="" asp-controller="BusSeatPrebook" asp-action="UserDetailPage" style="color:white;font-weight:900;">Back</a>
+
+
+                }
             </div>
-            <div class="align">
-                <b style="color:yellow;font-weight:900;">@Html.Label("Age")<i style="color:red;">*</i>  <br /></b>
-                @Html.TextBoxFor(m=>m.Age, new { @placeholder="Age" , @class = "my-textbox",@id="Age",@type="number"})
-                <br />
-            </div>
-            <div class="align">
-                <b style="color:yellow;font-weight:900;">@Html.Label("SeatNumber")<i style="color:red;">*</i>  <br /></b>
-                @Html.TextBoxFor(m=>m.Seatno, new { @placeholder="Seatnumber" , @class = "my-textbox",@id="Seatnumber",@type="number"})
-                <br />
-                <br />
-            </div>
-            <button type="submit" class="btn btn-success" style="font-weight:900;">Submit</button>
-
-            <a class="btn btn-danger" asp-area="" asp-controller="BusSeatPrebook" asp-action="UserDetailPage" style="color:white;font-weight:900;">Back</a>
-
-
-        }
+        </div>
     </div>
+    
 
 </body>
 <script>

@@ -348,13 +348,13 @@ namespace BusReservationSystem.webSolution.Controllers
                 if (checkresult.IsSuccessStatusCode)
                 {
                     bool result = checkresult.Content.ReadFromJsonAsync<bool>().Result;
-                    if (result == true)
+                    if (result == true && busDetails.BusId>0)
                     {
-                        TempData["Message"] = "Travel Id Created Successfully...";
+                        TempData["Message"] = "Detail Updated Successfully...";
                     }
                     else
                     {
-                        TempData["Message"] = "Detail Updated Successfully...";
+                        TempData["Message"] = "Travel Id Created Successfully...";
                     }
                 }
                 return RedirectToAction("GetBusTravelSchedule", new { busId = busDetails.BusId });
@@ -380,13 +380,13 @@ namespace BusReservationSystem.webSolution.Controllers
                 if (checkresult.IsSuccessStatusCode)
                 {
                     passengerDetails.seatnoList = checkresult.Content.ReadFromJsonAsync<List<BookTicket>>().Result;
-                    if (TempData["SelectedSeatno"] != null)
-                    {
+                    //if (TempData["SelectedSeatno"] != null)
+                    //{
 
-                        BookTicket no = new BookTicket();
-                        no.Seatno = Convert.ToInt32(TempData["SelectedSeatno"]);
-                        passengerDetails.seatnoList.Add(no);
-                    }
+                    //    BookTicket no = new BookTicket();
+                    //    no.Seatno = Convert.ToInt32(TempData["SelectedSeatno"]);
+                    //    passengerDetails.seatnoList.Add(no);
+                    //}
                     return View(passengerDetails);
                 }
             }
@@ -417,7 +417,7 @@ namespace BusReservationSystem.webSolution.Controllers
                         bool Isinserted = checkresult.Content.ReadFromJsonAsync<bool>().Result;
                         if (pasengerDetail.Count > 0)
                         {
-                            TempData["SelectedSeatno"] = pasengerDetail.Seatno;
+                            //TempData["SelectedSeatno"] = pasengerDetail.Seatno;
                             //using (var client1 = new HttpClient())
                             //{
                             //    pasengerDetail.TravelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
@@ -548,10 +548,12 @@ namespace BusReservationSystem.webSolution.Controllers
 
                 }
             }
+            
             DownloadTicket ticketdetail = new DownloadTicket();
+            int travelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
             using (var client = new HttpClient())
             {
-                int travelId = Convert.ToInt32(HttpContext.Session.GetString("TravelId"));
+                
                 int userId = Convert.ToInt32(HttpContext.Session.GetString("userId"));
                 client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/DownloadTicket");
                 var checkresult = client.GetAsync("DownloadTicket?travelId=" + travelId + "&userId=" + userId).Result;
@@ -562,9 +564,27 @@ namespace BusReservationSystem.webSolution.Controllers
                     ticketdetail.Destination = ticket.Destination;
                     ticketdetail.Date = ticket.Date;
                     ticketdetail.ReferenceId = ticket.ReferenceId;
-                    ticketdetail.BusName = HttpContext.Session.GetString("busname");
+                    
                 }
             }
+            
+            //TempData["busId"] = busId;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/GetBusName");
+                var Posttask = client.GetAsync("GetBusName?travelId=" + travelId);
+                Posttask.Wait();
+                var checkresult = Posttask.Result;
+                if (checkresult.IsSuccessStatusCode)
+                {
+                    
+                    var busDetails = checkresult.Content.ReadFromJsonAsync<BusMaster>().Result;
+                    ticketdetail.BusName = busDetails.BusName;
+
+                }
+            }
+
             using (var client = new HttpClient())
             {
                 int referenceId = Convert.ToInt32(HttpContext.Session.GetString("ReferenceId"));

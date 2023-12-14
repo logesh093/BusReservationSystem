@@ -31,5 +31,6 @@ namespace UserData.Core.IRepository
         public FindBus GetReferenceId(int travelId, int busId, int userId);
         public DownloadTicket DownloadTicket(int travelId, int userId);
         public List<PassengerList> GetPassenger(int referenceId);
+        public BusMaster GetBusName(int travelId);
     }
 }

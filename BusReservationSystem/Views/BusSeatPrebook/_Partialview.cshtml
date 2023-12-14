@@ -98,6 +98,12 @@
     //     }
     // });
 
+    $.validator.addMethod("notEqual", function (value) {
+        
+        var source = $("#Source").val();
+        return source!=value;
+    });
+
     $("#formvalidation").validate({
         rules: {
             Source: {
@@ -106,6 +112,7 @@
             },
             Destination: {
                 required: true,
+                notEqual: "#Destination",
                
             },
             // DateTime: {
@@ -121,7 +128,7 @@
             },
             Destination: {
                 required: "Destination field is required",
-               
+                notEqual: "Source and Destination not be same",
             },
             // DateTime: {
 

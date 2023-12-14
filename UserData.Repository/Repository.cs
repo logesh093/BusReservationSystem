@@ -293,12 +293,12 @@ namespace UserData.Repository
         }
         #endregion
 
-        #region Search Available buse
+        #region Search Available buses
         public List<BusTravelScheduleModel> SearchAvailableBuses(FindBus SearchDetails)
         {
             using (var connections = Connection)
             {
-                if (SearchDetails.DateTime >=DateTime.Now)
+                if (SearchDetails.DateTime !=null)
                 {
                     var BusDetailList = (connections.Query<BusTravelScheduleModel>(DapperSql.FindBusesWithDate,
                     new
@@ -367,6 +367,7 @@ namespace UserData.Repository
                         @age=passengerDetails.Age,
                         @seatno=passengerDetails.Seatno,
                         @referenceid=passengerDetails.referenceId,
+                        @createtimestamp=DateTime.Now,
                        
                     }));
                     IsInserted = true;
@@ -613,6 +614,21 @@ namespace UserData.Repository
         }
         #endregion
 
+        public BusMaster GetBusName(int travelId)
+        {
+            using (var connections = Connection)
+            {
+                if(travelId > 0)
+                {
+                    var busDetail = connections.Query<BusMaster>(DapperSql.GetBusName, new
+                    {
+                        @travelid=travelId,
+                    }).SingleOrDefault();
+                    return busDetail;
+                }
+                return null;
+            }
+        }
 
 
         public bool VerifyPassword(string password, string hash, byte[] salt)

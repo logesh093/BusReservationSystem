@@ -106,5 +106,9 @@ namespace UserData.Services
         {
             return _repository.GetPassenger(referenceId);
         }
+        public BusMaster GetBusName(int travelId)
+        {
+            return _repository.GetBusName(travelId);
+        }
     }
 }
