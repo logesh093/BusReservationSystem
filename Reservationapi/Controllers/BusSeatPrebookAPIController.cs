@@ -99,6 +99,7 @@ namespace BusReservation.API.Controllers
             return Ok(getBusScheduleById);
         }
         #endregion
+
         #region Create Travel Id
         [HttpPost]
         [Route("CreateOrUpdateTravelId")]
@@ -260,6 +261,4 @@ namespace BusReservation.API.Controllers
             return Ok(busName);
         }
     }
-
-
 }

@@ -125,12 +125,34 @@ namespace BusReservationSystem.webSolution.Controllers
                     userProfile.EmailId = GetUserProfile.EmailId;
                     userProfile.Address = GetUserProfile.Address;
                     userProfile.Phonenumber = GetUserProfile.Phonenumber;
+                    
                     return View(userProfile);
                 }
                 return View();
             }
         }
         #endregion
+
+        [HttpGet]
+        public IActionResult _PartialViewProfile()
+        {
+            using (var client = new HttpClient())
+            {
+                int userid = Convert.ToInt32(HttpContext.Session.GetString("userId"));
+                client.BaseAddress = new Uri("http://localhost:5237/api/BusSeatPrebookAPI/UserProfile");
+                var Posttask = client.GetAsync("UserProfile?userId=" + userid);
+                Posttask.Wait();
+                var checkresult = Posttask.Result;
+                if (checkresult.IsSuccessStatusCode)
+                {
+                    UserPage GetUserProfile = checkresult.Content.ReadFromJsonAsync<UserPage>().Result;
+
+
+                    return PartialView("_PartialViewProfile",GetUserProfile);
+                }
+                return View();
+            }
+        }
 
         #region View Passenger Details
         [HttpGet]
